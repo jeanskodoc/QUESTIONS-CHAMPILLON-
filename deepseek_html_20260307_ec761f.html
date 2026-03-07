@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>SCIENCES POUR NOUS - Présentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(145deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: clamp(10px, 3vw, 30px);
+        }
+
+        .container {
+            max-width: min(1100px, 95%);
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: clamp(15px, 4vw, 30px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: clamp(15px, 5vw, 50px);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: #1a1a2e;
+            font-size: clamp(1.5rem, 5vw, 2.8rem);
+            margin-bottom: clamp(10px, 3vh, 25px);
+            font-weight: 700;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, #4158D0, #C850C0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .image-container {
+            margin: clamp(15px, 4vh, 35px) 0;
+            border-radius: clamp(10px, 2vw, 20px);
+            overflow: hidden;
+            box-shadow: 0 15px 30px -8px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.5);
+            background: #f8f9fa;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .image-container img:hover {
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 480px) {
+            .image-container {
+                aspect-ratio: 4/3;
+            }
+        }
+
+        .description {
+            color: #2d3436;
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            margin: clamp(15px, 4vh, 35px) 0;
+            line-height: 1.6;
+            max-width: min(700px, 100%);
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 5px;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: clamp(12px, 3vw, 25px);
+            margin-top: clamp(20px, 5vh, 45px);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: clamp(10px, 2vw, 14px) clamp(20px, 4vw, 35px);
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            min-width: min(140px, 40vw);
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-noter {
+            background: linear-gradient(145deg, #4158D0, #7340b0);
+            color: white;
+        }
+
+        .btn-noter:hover {
+            background: linear-gradient(145deg, #3449b0, #6335a0);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px #4158D0;
+        }
+
+        .btn-live {
+            background: linear-gradient(145deg, #C850C0, #FF6B6B);
+            color: white;
+        }
+
+        .btn-live:hover {
+            background: linear-gradient(145deg, #b848b0, #f55b5b);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px #C850C0;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 380px) {
+            .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        .footer-note {
+            margin-top: clamp(20px, 5vh, 40px);
+            color: #636e72;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
+            padding: 0 10px;
+            line-height: 1.5;
+        }
+
+        /* Amélioration du touch pour mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .btn {
+                padding: 14px 25px;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            .btn:active {
+                opacity: 0.8;
+            }
+        }
+
+        /* Support mode sombre */
+        @media (prefers-color-scheme: dark) {
+            .container {
+                background: rgba(26, 26, 46, 0.95);
+            }
+            
+            .description {
+                color: #e0e0e0;
+            }
+            
+            h1 {
+                color: #ffffff;
+            }
+            
+            .footer-note {
+                color: #b2bec3;
+            }
+        }
+
+        /* Animation d'entrée */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container > * {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .image-container {
+            animation-delay: 0.1s;
+        }
+        
+        .description {
+            animation-delay: 0.2s;
+        }
+        
+        .buttons-container {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span>SCIENCES</span> <span style="background: linear-gradient(135deg, #C850C0, #FF6B6B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">POUR NOUS</span>
+        </h1>
+        
+        <div class="image-container">
+            <img 
+                src="jeux.png" 
+                alt="Jeux Sciences Pour Nous - Interface ludique et éducative" 
+                loading="lazy"
+                onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.png%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage de présentation%3C/text%3E%3C/svg%3E';"
+            >
+        </div>
+
+        <p class="description">
+            🧪 Explorez, apprenez et amusez-vous avec nos jeux scientifiques interactifs ! 
+            Des expériences virtuelles passionnantes pour éveiller la curiosité de tous.
+        </p>
+
+        <div class="buttons-container">
+            <a href="SCIENCE POUR NOUS.html" class="btn btn-noter">
+                <span>⭐</span> NOTER
+            </a>
+            <a href="https://hello.freeconference.com/login/access-code" target="_blank" rel="noopener noreferrer" class="btn btn-live">
+                <span>🎥</span> LIVE
+            </a>
+        </div>
+
+        <div class="footer-note">
+            ✨ Évaluez nos jeux ou rejoignez notre conférence en direct
+        </div>
+    </div>
+
+    <script>
+        // Optimisation pour le chargement de l'image
+        document.addEventListener('DOMContentLoaded', function() {
+            const img = document.querySelector('img');
+            
+            // Vérification que l'image existe
+            if (img.complete && img.naturalHeight === 0) {
+                img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.png%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage de présentation%3C/text%3E%3C/svg%3E';
+            }
+        });
+
+        // Gestion du redimensionnement pour maintenir l'aspect ratio
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                // Ajustements si nécessaires
+            }, 150);
+        });
+    </script>
+</body>
+</html>
