@@ -57,9 +57,7 @@
             overflow: hidden;
             box-shadow: 0 15px 30px -8px rgba(0,0,0,0.3);
             border: 2px solid rgba(255,255,255,0.5);
-            background: #1a1a2e; /* Fond sombre pour mieux voir les contours */
-            display: flex;
-            flex-direction: column;
+            background: #1a1a2e;
         }
 
         .image-container {
@@ -68,22 +66,58 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #0f0f1a; /* Fond encore plus sombre */
-            min-height: 200px;
-            max-height: 60vh;
-            padding: 10px; /* Espace autour de l'image */
+            background: #0f0f1a;
+            min-height: 300px; /* Hauteur minimale pour les petites images */
+            max-height: 70vh; /* Hauteur maximale */
+            padding: 15px; /* Espace autour de l'image */
         }
 
         .image-container img {
             width: auto; /* Largeur automatique */
             height: auto; /* Hauteur automatique */
-            max-width: 100%; /* Ne dépasse pas la largeur du conteneur */
-            max-height: 55vh; /* Limite la hauteur mais garde les proportions */
-            object-fit: none; /* Pas de zoom, taille réelle */
+            max-width: 100%; /* Ne dépasse pas la largeur */
+            max-height: 65vh; /* Limite la hauteur */
+            object-fit: scale-down; /* Maintient les proportions sans couper */
             display: block;
-            margin: 0 auto; /* Centrée */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin: 0 auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
             border-radius: 8px;
+        }
+
+        /* CORRECTION POUR LES IMAGES EN PORTRAIT */
+        @media (orientation: portrait) {
+            .image-container {
+                max-height: 60vh; /* Moins haut en mode portrait */
+            }
+            
+            .image-container img {
+                max-height: 55vh;
+                max-width: 95%; /* Un peu de marge sur les côtés */
+            }
+        }
+
+        /* Pour les très petits écrans */
+        @media (max-width: 480px) {
+            .image-container {
+                max-height: 55vh;
+                min-height: 250px;
+                padding: 10px;
+            }
+            
+            .image-container img {
+                max-height: 50vh;
+            }
+        }
+
+        /* Pour les écrans très hauts */
+        @media (min-height: 1000px) {
+            .image-container {
+                max-height: 60vh;
+            }
+            
+            .image-container img {
+                max-height: 55vh;
+            }
         }
 
         .fullscreen-btn {
@@ -120,18 +154,18 @@
             width: 100vw;
             height: 100vh;
             max-height: none;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.98);
             z-index: 9999;
             padding: 20px;
             margin: 0;
         }
 
         .image-container.fullscreen img {
-            max-width: 95vw;
+            max-width: min(95vw, 95vh); /* S'adapte à la fois à la largeur et à la hauteur */
             max-height: 95vh;
             width: auto;
             height: auto;
-            object-fit: none; /* Toujours pas de zoom */
+            object-fit: scale-down;
         }
 
         .image-container.fullscreen .fullscreen-btn {
@@ -146,12 +180,12 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(255, 0, 0, 0.7);
+            background: rgba(255, 0, 0, 0.8);
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 1rem;
+            padding: 12px 25px;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             display: none;
@@ -159,6 +193,7 @@
             gap: 8px;
             z-index: 10000;
             backdrop-filter: blur(5px);
+            border: 2px solid white;
         }
 
         .close-fullscreen.visible {
@@ -166,16 +201,22 @@
         }
 
         .close-fullscreen:hover {
-            background: rgba(255, 0, 0, 0.9);
+            background: rgba(255, 0, 0, 0.95);
+            transform: scale(1.05);
         }
 
         .image-info {
             background: rgba(0,0,0,0.05);
-            padding: 8px 15px;
-            font-size: 0.85rem;
+            padding: 10px 15px;
+            font-size: 0.9rem;
             color: #666;
-            text-align: left;
+            text-align: center;
             border-top: 1px solid rgba(255,255,255,0.1);
+            font-style: italic;
+        }
+
+        .image-info::before {
+            content: "📐 ";
         }
 
         .description {
@@ -245,19 +286,16 @@
         }
 
         @media (max-width: 480px) {
-            .image-container {
-                max-height: 50vh;
-            }
-            
-            .image-container img {
-                max-height: 45vh;
-            }
-            
             .fullscreen-btn {
                 bottom: 10px;
                 right: 10px;
                 padding: 8px 15px;
                 font-size: 0.9rem;
+            }
+            
+            .image-info {
+                font-size: 0.8rem;
+                padding: 8px 10px;
             }
         }
 
@@ -265,6 +303,15 @@
             .btn {
                 width: 100%;
                 max-width: 250px;
+            }
+            
+            .fullscreen-btn span {
+                display: none;
+            }
+            
+            .fullscreen-btn:after {
+                content: "⛶";
+                font-size: 1.2rem;
             }
         }
 
@@ -279,12 +326,12 @@
         /* Amélioration du touch pour mobile */
         @media (hover: none) and (pointer: coarse) {
             .btn, .fullscreen-btn, .close-fullscreen {
-                padding: 14px 25px;
                 -webkit-tap-highlight-color: transparent;
             }
             
-            .btn:active, .fullscreen-btn:active {
-                opacity: 0.8;
+            .btn:active, .fullscreen-btn:active, .close-fullscreen:active {
+                opacity: 0.7;
+                transform: scale(0.98);
             }
         }
 
@@ -308,6 +355,7 @@
             
             .image-info {
                 color: #aaa;
+                background: rgba(255,255,255,0.1);
             }
         }
 
@@ -327,18 +375,6 @@
             animation: fadeInUp 0.6s ease-out forwards;
         }
 
-        .image-section {
-            animation-delay: 0.1s;
-        }
-        
-        .description {
-            animation-delay: 0.2s;
-        }
-        
-        .buttons-container {
-            animation-delay: 0.3s;
-        }
-
         /* Empêcher le scroll quand plein écran */
         body.no-scroll {
             overflow: hidden;
@@ -356,16 +392,17 @@
                 <img 
                     src="jeux.JPEG" 
                     alt="Jeux Sciences Pour Nous - Interface ludique et éducative" 
-                        loading="lazy"
                     id="mainImage"
-                    onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage originale sans zoom%3C/text%3E%3C/svg%3E';"
+                    onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'400\' viewBox=\'0 0 300 400\'%3E%3Crect width=\'300\' height=\'400\' fill=\'%234158D0\'/%3E%3Ctext x=\'30\' y=\'200\' font-family=\'Arial\' font-size=\'20\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'30\' y=\'250\' font-family=\'Arial\' font-size=\'16\' fill=\'%23ffffff\'%3EImage en portrait%3C/text%3E%3C/svg%3E';"
+                    onload="this.style.opacity='1'"
+                    style="opacity: 1;"
                 >
                 <button class="fullscreen-btn" id="fullscreenBtn">
                     <span>⛶</span> PLEIN ÉCRAN
                 </button>
             </div>
             <div class="image-info">
-                📸 Image affichée en taille réelle (sans zoom) - Cliquez sur "Plein écran" pour voir tous les détails
+                Image affichée en totalité - Format original conservé
             </div>
         </div>
 
@@ -421,15 +458,40 @@
             }
         });
 
+        // Fermer en cliquant sur le fond (optionnel)
+        imageContainer.addEventListener('click', function(event) {
+            if (imageContainer.classList.contains('fullscreen') && event.target === imageContainer) {
+                closeFullscreen();
+            }
+        });
+
         // Optimisation pour le chargement de l'image
         document.addEventListener('DOMContentLoaded', function() {
             const img = document.getElementById('mainImage');
             
             // Vérification que l'image existe
-            if (img.complete && img.naturalHeight === 0) {
-                img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage originale sans zoom%3C/text%3E%3C/svg%3E';
+            if (img.complete) {
+                if (img.naturalHeight === 0) {
+                    img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'400\' viewBox=\'0 0 300 400\'%3E%3Crect width=\'300\' height=\'400\' fill=\'%234158D0\'/%3E%3Ctext x=\'30\' y=\'200\' font-family=\'Arial\' font-size=\'20\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'30\' y=\'250\' font-family=\'Arial\' font-size=\'16\' fill=\'%23ffffff\'%3EImage en portrait%3C/text%3E%3C/svg%3E';
+                }
             }
         });
+
+        // Détection de l'orientation pour ajuster l'affichage
+        function handleOrientationChange() {
+            // Recalculer les dimensions si nécessaire
+            const img = document.getElementById('mainImage');
+            if (img.complete) {
+                // Forcer un recalcul du layout
+                img.style.maxHeight = 'none';
+                setTimeout(() => {
+                    img.style.maxHeight = '';
+                }, 10);
+            }
+        }
+
+        window.addEventListener('orientationchange', handleOrientationChange);
+        window.addEventListener('resize', handleOrientationChange);
 
         // Gestion du redimensionnement
         let resizeTimeout;
