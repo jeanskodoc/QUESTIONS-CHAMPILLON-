@@ -50,36 +50,132 @@
             font-weight: 800;
         }
 
-        .image-container {
+        .image-section {
+            position: relative;
             margin: clamp(10px, 3vh, 25px) 0;
             border-radius: clamp(10px, 2vw, 20px);
             overflow: hidden;
             box-shadow: 0 15px 30px -8px rgba(0,0,0,0.3);
             border: 2px solid rgba(255,255,255,0.5);
-            background: #f8f9fa;
+            background: #1a1a2e; /* Fond sombre pour mieux voir les contours */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            max-height: 70vh; /* Limite la hauteur max à 70% de l'écran */
+            background: #0f0f1a; /* Fond encore plus sombre */
+            min-height: 200px;
+            max-height: 60vh;
+            padding: 10px; /* Espace autour de l'image */
         }
 
         .image-container img {
-            width: 100%;
-            height: auto; /* Change de 100% à auto pour garder les proportions */
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* Change de cover à contain pour voir l'image entière */
+            width: auto; /* Largeur automatique */
+            height: auto; /* Hauteur automatique */
+            max-width: 100%; /* Ne dépasse pas la largeur du conteneur */
+            max-height: 55vh; /* Limite la hauteur mais garde les proportions */
+            object-fit: none; /* Pas de zoom, taille réelle */
             display: block;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0 auto; /* Centrée */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 8px;
         }
 
-        .image-container img:hover {
-            transform: scale(1.02);
+        .fullscreen-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            z-index: 10;
         }
 
-        /* Suppression de l'aspect ratio forcé */
-        .image-container {
-            aspect-ratio: auto; /* Annule l'aspect-ratio précédent */
+        .fullscreen-btn:hover {
+            background: rgba(65, 88, 208, 0.9);
+            transform: scale(1.05);
+            border-color: white;
+        }
+
+        /* Style pour le mode plein écran */
+        .image-container.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            max-height: none;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .image-container.fullscreen img {
+            max-width: 95vw;
+            max-height: 95vh;
+            width: auto;
+            height: auto;
+            object-fit: none; /* Toujours pas de zoom */
+        }
+
+        .image-container.fullscreen .fullscreen-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+        }
+
+        .close-fullscreen {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .close-fullscreen.visible {
+            display: flex;
+        }
+
+        .close-fullscreen:hover {
+            background: rgba(255, 0, 0, 0.9);
+        }
+
+        .image-info {
+            background: rgba(0,0,0,0.05);
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            color: #666;
+            text-align: left;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
         .description {
@@ -150,7 +246,18 @@
 
         @media (max-width: 480px) {
             .image-container {
-                max-height: 50vh; /* Plus petit sur mobile */
+                max-height: 50vh;
+            }
+            
+            .image-container img {
+                max-height: 45vh;
+            }
+            
+            .fullscreen-btn {
+                bottom: 10px;
+                right: 10px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
             }
         }
 
@@ -171,12 +278,12 @@
 
         /* Amélioration du touch pour mobile */
         @media (hover: none) and (pointer: coarse) {
-            .btn {
+            .btn, .fullscreen-btn, .close-fullscreen {
                 padding: 14px 25px;
                 -webkit-tap-highlight-color: transparent;
             }
             
-            .btn:active {
+            .btn:active, .fullscreen-btn:active {
                 opacity: 0.8;
             }
         }
@@ -198,6 +305,10 @@
             .footer-note {
                 color: #b2bec3;
             }
+            
+            .image-info {
+                color: #aaa;
+            }
         }
 
         /* Animation d'entrée */
@@ -216,7 +327,7 @@
             animation: fadeInUp 0.6s ease-out forwards;
         }
 
-        .image-container {
+        .image-section {
             animation-delay: 0.1s;
         }
         
@@ -227,6 +338,11 @@
         .buttons-container {
             animation-delay: 0.3s;
         }
+
+        /* Empêcher le scroll quand plein écran */
+        body.no-scroll {
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -235,14 +351,27 @@
             <span>SCIENCES</span> <span style="background: linear-gradient(135deg, #C850C0, #FF6B6B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">POUR NOUS</span>
         </h1>
         
-        <div class="image-container">
-            <img 
-                src="jeux.JPEG" 
-                alt="Jeux Sciences Pour Nous - Interface ludique et éducative" 
-                loading="lazy"
-                onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage entièrement visible%3C/text%3E%3C/svg%3E';"
-            >
+        <div class="image-section">
+            <div class="image-container" id="imageContainer">
+                <img 
+                    src="jeux.JPEG" 
+                    alt="Jeux Sciences Pour Nous - Interface ludique et éducative" 
+                        loading="lazy"
+                    id="mainImage"
+                    onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage originale sans zoom%3C/text%3E%3C/svg%3E';"
+                >
+                <button class="fullscreen-btn" id="fullscreenBtn">
+                    <span>⛶</span> PLEIN ÉCRAN
+                </button>
+            </div>
+            <div class="image-info">
+                📸 Image affichée en taille réelle (sans zoom) - Cliquez sur "Plein écran" pour voir tous les détails
+            </div>
         </div>
+
+        <button class="close-fullscreen" id="closeFullscreenBtn">
+            <span>✕</span> FERMER
+        </button>
 
         <p class="description">
             🧪 Explorez, apprenez et amusez-vous avec nos jeux scientifiques interactifs ! 
@@ -264,13 +393,41 @@
     </div>
 
     <script>
+        // Gestion du plein écran
+        const imageContainer = document.getElementById('imageContainer');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const closeFullscreenBtn = document.getElementById('closeFullscreenBtn');
+        const body = document.body;
+
+        function openFullscreen() {
+            imageContainer.classList.add('fullscreen');
+            closeFullscreenBtn.classList.add('visible');
+            body.classList.add('no-scroll');
+        }
+
+        function closeFullscreen() {
+            imageContainer.classList.remove('fullscreen');
+            closeFullscreenBtn.classList.remove('visible');
+            body.classList.remove('no-scroll');
+        }
+
+        fullscreenBtn.addEventListener('click', openFullscreen);
+        closeFullscreenBtn.addEventListener('click', closeFullscreen);
+
+        // Fermer avec la touche Echap
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && imageContainer.classList.contains('fullscreen')) {
+                closeFullscreen();
+            }
+        });
+
         // Optimisation pour le chargement de l'image
         document.addEventListener('DOMContentLoaded', function() {
-            const img = document.querySelector('img');
+            const img = document.getElementById('mainImage');
             
             // Vérification que l'image existe
             if (img.complete && img.naturalHeight === 0) {
-                img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage entièrement visible%3C/text%3E%3C/svg%3E';
+                img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage originale sans zoom%3C/text%3E%3C/svg%3E';
             }
         });
 
