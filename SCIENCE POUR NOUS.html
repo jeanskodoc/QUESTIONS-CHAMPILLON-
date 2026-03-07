@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>SCIENCES POUR NOUS - Lycée : Séries et matières</title>
+    <style>
+        /* ========== VARIABLES ET THEME ========== */
+        :root {
+            --primary: #0b4f6c;
+            --primary-dark: #083b4f;
+            --primary-light: #1a7a9c;
+            --secondary: #f4c542;
+            --secondary-dark: #e0b038;
+            --accent: #d93f3f;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --white: #ffffff;
+            --gradient: linear-gradient(135deg, #0b4f6c 0%, #1a7a9c 100%);
+            --gradient-secondary: linear-gradient(135deg, #f4c542 0%, #e0b038 100%);
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* ========== HEADER ========== */
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 0.5rem;
+        }
+        
+        .logo {
+            text-align: center;
+        }
+        
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .logo p {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            font-style: italic;
+        }
+        
+        .slogan {
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 0.4rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow);
+        }
+        
+        @media (min-width: 768px) {
+            .header-container {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            .logo {
+                text-align: left;
+            }
+        }
+        
+        /* ========== NAVIGATION ========== */
+        nav {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 90px;
+            z-index: 999;
+        }
+        
+        .nav-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            background: white;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .nav-toggle .hamburger {
+            font-size: 1.8rem;
+        }
+        
+        .nav-container {
+            display: none;
+            flex-direction: column;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .nav-container.show {
+            display: flex;
+        }
+        
+        .nav-item {
+            padding: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s;
+            color: var(--dark);
+            position: relative;
+        }
+        
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .dropdown {
+            display: none;
+            background: #f8f9fa;
+            width: 100%;
+        }
+        
+        .nav-item.active .dropdown {
+            display: block;
+        }
+        
+        .dropdown a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-bottom: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+        
+        .dropdown a:hover {
+            background: var(--secondary);
+            color: var(--dark);
+            padding-left: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            nav {
+                top: 110px;
+            }
+            
+            .nav-toggle {
+                display: none;
+            }
+            
+            .nav-container {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+            }
+            
+            .nav-item {
+                border-bottom: none;
+                padding: 1rem 1.5rem;
+            }
+            
+            .dropdown {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                min-width: 220px;
+                box-shadow: var(--shadow-lg);
+                border-radius: 0 0 8px 8px;
+                display: none;
+            }
+            
+            .nav-item:hover .dropdown {
+                display: block;
+            }
+        }
+        
+        /* ========== MAIN CONTENT ========== */
+        main {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            min-height: 60vh;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .section.active-section {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ========== HERO SECTION ========== */
+        .hero {
+            background: var(--gradient);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        /* ========== CARDS ========== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+        }
+        
+        .card-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .card-content {
+            color: var(--gray);
+        }
+        
+        /* ========== SÉLECTEURS DE SÉRIES ========== */
+        .series-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .serie-tab {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+        
+        .serie-tab.scientifique {
+            background: linear-gradient(135deg, #28a745, #34ce57);
+            color: white;
+        }
+        
+        .serie-tab.litteraire {
+            background: linear-gradient(135deg, #6f42c1, #9166d9);
+            color: white;
+        }
+        
+        .serie-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .serie-tab.active {
+            border: 3px solid var(--secondary);
+        }
+        
+        /* ========== MATIÈRES ========== */
+        .subjects-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .subject-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            border-top: 4px solid var(--primary);
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .subject-card.maths { border-top-color: #0b4f6c; }
+        .subject-card.physique { border-top-color: #28a745; }
+        .subject-card.svt { border-top-color: #ff8c00; }
+        
+        .subject-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .subject-icon {
+            font-size: 2.5rem;
+        }
+        
+        .subject-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .subject-content {
+            margin: 1.5rem 0;
+        }
+        
+        .topic-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        
+        .topic-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* ========== BOUTONS JEUX ========== */
+        .game-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+        
+        .game-btn {
+            background: var(--gradient-secondary);
+            color: var(--dark);
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            background: var(--secondary);
+        }
+        
+        .game-btn.maths { background: linear-gradient(135deg, #0b4f6c, #1a7a9c); color: white; }
+        .game-btn.physique { background: linear-gradient(135deg, #28a745, #34ce57); color: white; }
+        .game-btn.svt { background: linear-gradient(135deg, #ff8c00, #ffaa33); color: white; }
+        
+        /* ========== BADGES ========== */
+        .region-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0.2rem;
+            color: white;
+        }
+        
+        .region-savanes { background: #e44d2e; }
+        .region-kara { background: #2e8b57; }
+        .region-centrale { background: #ff8c00; }
+        .region-plateaux { background: #9370db; }
+        .region-maritime { background: #1e90ff; }
+        .region-golfe { background: #c71585; }
+        
+        .serie-badge {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0.2rem;
+            color: white;
+        }
+        
+        .serie-badge.scientifique { background: #28a745; }
+        .serie-badge.litteraire { background: #6f42c1; }
+        
+        /* ========== FORMULAIRES ========== */
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .form-title {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .payment-section {
+            background: linear-gradient(135deg, #f4c54220, #f4c54240);
+            border: 2px solid var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .payment-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 1rem 0;
+        }
+        
+        .yas-number {
+            background: #25D366;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: inline-block;
+            margin: 1rem 0;
+        }
+        
+        .form-section {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .form-section h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 640px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(11, 79, 108, 0.1);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        /* ========== PARTICIPANTS ========== */
+        .participant-card {
+            background: white;
+            border: 2px solid #eee;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .participant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .participant-header h4 {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .remove-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .remove-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .add-btn {
+            background: var(--secondary);
+            color: var(--dark);
+            border: none;
+            border-radius: var(--border-radius-sm);
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 1rem 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .add-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* ========== BOUTONS ========== */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin: 0.25rem;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-large {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.2rem;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* ========== TABLEAUX ========== */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 800px;
+        }
+        
+        .ranking-table th {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .ranking-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .ranking-table tr:hover {
+            background: var(--light);
+        }
+        
+        .rank-1 { background: linear-gradient(135deg, #ffd70020, #ffd70040); }
+        .rank-2 { background: linear-gradient(135deg, #c0c0c020, #c0c0c040); }
+        .rank-3 { background: linear-gradient(135deg, #cd7f3220, #cd7f3240); }
+        
+        /* ========== FILTRES ========== */
+        .filters-bar {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .filter-select {
+            padding: 0.6rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius-sm);
+            min-width: 150px;
+            font-size: 0.95rem;
+        }
+        
+        /* ========== NOTIFICATIONS ========== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.2rem 1.5rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 2000;
+            max-width: 400px;
+            animation: slideIn 0.3s;
+            border-left: 4px solid var(--success);
+        }
+        
+        .notification.error {
+            border-left-color: var(--accent);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* ========== FOOTER ========== */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>🔬 SCIENCES POUR NOUS</h1>
+                <p>« Le savoir, notre terrain de jeu. »</p>
+            </div>
+            <div class="slogan">
+                🇹🇬 Togo - Édition 2024-2025
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="nav-toggle" onclick="toggleNav()">
+            <span>☰ Menu</span>
+            <span class="hamburger">📋</span>
+        </div>
+        <div class="nav-container" id="navContainer">
+            <div class="nav-item" onclick="showSection('accueil')">Accueil</div>
+            
+            <div class="nav-item" onclick="showSection('competitions')">
+                Compétitions
+                <div class="dropdown">
+                    <a href="#" onclick="showSection('competitions'); event.preventDefault();">Calendrier</a>
+                    <a href="#" onclick="showSection('competitions'); event.preventDefault();">Règlement</a>
+                    <a href="#" onclick="showSection('competitions'); event.preventDefault();">Prix</a>
+                </div>
+            </div>
+            
+            <div class="nav-item" onclick="showSection('classements')">
+                Classements
+                <div class="dropdown">
+                    <a href="#" onclick="filterRankings('interclasses'); event.preventDefault();">Interclasses</a>
+                    <a href="#" onclick="filterRankings('interetablissements'); event.preventDefault();">Inter-établissements</a>
+                    <a href="#" onclick="filterRankings('interinspections'); event.preventDefault();">Inter-inspections</a>
+                    <a href="#" onclick="filterRankings('interregions'); event.preventDefault();">Inter-régions</a>
+                    <a href="#" onclick="filterRankings('finale'); event.preventDefault();">Finale</a>
+                </div>
+            </div>
+            
+            <div class="nav-item" onclick="showSection('inscription')">Inscription</div>
+            
+            <div class="nav-item" onclick="showSection('college')">
+                Collège
+                <div class="dropdown">
+                    <a href="#" onclick="loadCollegeContent('6eme'); event.preventDefault();">6ème</a>
+                    <a href="#" onclick="loadCollegeContent('5eme'); event.preventDefault();">5ème</a>
+                    <a href="#" onclick="loadCollegeContent('4eme'); event.preventDefault();">4ème</a>
+                    <a href="#" onclick="loadCollegeContent('3eme'); event.preventDefault();">3ème</a>
+                </div>
+            </div>
+            
+            <div class="nav-item" onclick="showSection('lycee')">
+                Lycée
+                <div class="dropdown">
+                    <a href="#" onclick="loadLyceeContent('seconde'); event.preventDefault();">Seconde</a>
+                    <a href="#" onclick="loadLyceeContent('premiere'); event.preventDefault();">Première</a>
+                    <a href="#" onclick="loadLyceeContent('terminale'); event.preventDefault();">Terminale</a>
+                </div>
+            </div>
+            
+            <div class="nav-item" onclick="showSection('ressources')">
+                Ressources
+                <div class="dropdown">
+                    <a href="#" onclick="showSection('ressources'); event.preventDefault();">Cours</a>
+                    <a href="#" onclick="showSection('ressources'); event.preventDefault();">Exercices</a>
+                    <a href="#" onclick="showSection('ressources'); event.preventDefault();">Annales</a>
+                </div>
+            </div>
+            
+            <div class="nav-item" onclick="showSection('jeux')">Jeux en ligne</div>
+        </div>
+    </nav>
+    
+    <main>
+        <!-- ACCUEIL -->
+        <section id="accueil" class="section active-section">
+            <div class="hero">
+                <h2>🏆 SCIENCES POUR NOUS 2024-2025</h2>
+                <p>La plus grande compétition scientifique inter-scolaire du Togo</p>
+                <p>Du collège au lycée, toutes séries confondues</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">15,450+</div>
+                        <div class="stat-label">Participants</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">245</div>
+                        <div class="stat-label">Établissements</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Régions</div>
+                    </div>
+                </div>
+                <button class="btn" style="background: var(--secondary); color: var(--dark); margin-top: 2rem;" onclick="showSection('inscription')">
+                    📝 Inscrire mon équipe
+                </button>
+            </div>
+            
+            <!-- Boutons jeux sur l'accueil -->
+            <div class="game-buttons">
+                <button class="game-btn maths" onclick="window.location.href='jeux.html#maths'">
+                    🧮 Mathématiques
+                </button>
+                <button class="game-btn physique" onclick="window.location.href='jeux.html#physique'">
+                    ⚛️ Sciences Physiques
+                </button>
+                <button class="game-btn svt" onclick="window.location.href='jeux.html#svt'">
+                    🔬 SVT
+                </button>
+            </div>
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">📅</span>
+                        <h3 class="card-title">Prochaine phase</h3>
+                    </div>
+                    <div class="card-content">
+                        <p><strong>Interclasses</strong></p>
+                        <p>15 Oct - 15 Nov 2024</p>
+                        <p>Sélections dans chaque classe</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">💰</span>
+                        <h3 class="card-title">Frais d'inscription</h3>
+                    </div>
+                    <div class="card-content">
+                        <p style="font-size: 2rem; color: var(--accent); font-weight: 700;">10 000 F</p>
+                        <p>Par équipe (3-5 participants)</p>
+                        <p><strong>Yas :</strong> +228 92 87 16 05</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🏆</span>
+                        <h3 class="card-title">Dotations</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>🥇 500 000 FCFA</p>
+                        <p>🥈 300 000 FCFA</p>
+                        <p>🥉 150 000 FCFA</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 style="color: var(--primary); margin: 3rem 0 1.5rem;">🌍 Régions participantes</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                <span class="region-badge region-savanes">Savanes</span>
+                <span class="region-badge region-kara">Kara</span>
+                <span class="region-badge region-centrale">Centrale</span>
+                <span class="region-badge region-plateaux">Plateaux</span>
+                <span class="region-badge region-maritime">Maritime</span>
+                <span class="region-badge region-golfe">Golfe (Grand Lomé)</span>
+            </div>
+        </section>
+        
+        <!-- COMPÉTITIONS -->
+        <section id="competitions" class="section">
+            <h2 style="color: var(--primary); text-align: center; margin-bottom: 2rem;">🏆 Parcours des compétitions</h2>
+            
+            <div class="phases-container">
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <h3>Phase 1: Interclasses</h3>
+                        <span class="phase-date">15 Oct - 15 Nov 2024</span>
+                    </div>
+                    <div class="phase-body">
+                        <p><strong>📍 Dans chaque établissement</strong></p>
+                        <p>Sélection des 3 meilleurs élèves par classe</p>
+                        <p><strong>Participants :</strong> Tous les élèves</p>
+                    </div>
+                </div>
+                
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <h3>Phase 2: Inter-établissements</h3>
+                        <span class="phase-date">1 Déc - 15 Jan 2025</span>
+                    </div>
+                    <div class="phase-body">
+                        <p><strong>📍 Par inspection (40 inspections)</strong></p>
+                        <p>Finales par ville et par inspection</p>
+                        <p><strong>Qualifiés :</strong> Champions des interclasses</p>
+                    </div>
+                </div>
+                
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <h3>Phase 3: Inter-inspections</h3>
+                        <span class="phase-date">1 Fév - 28 Fév 2025</span>
+                    </div>
+                    <div class="phase-body">
+                        <p><strong>📍 Par DRE (6 directions)</strong></p>
+                        <p>Compétitions par région éducative</p>
+                        <div class="phase-regions">
+                            <span class="region-badge region-savanes">Savanes</span>
+                            <span class="region-badge region-kara">Kara</span>
+                            <span class="region-badge region-centrale">Centrale</span>
+                            <span class="region-badge region-plateaux">Plateaux</span>
+                            <span class="region-badge region-maritime">Maritime</span>
+                            <span class="region-badge region-golfe">Golfe</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <h3>Phase 4: Inter-régions</h3>
+                        <span class="phase-date">15 Mar - 15 Avr 2025</span>
+                    </div>
+                    <div class="phase-body">
+                        <p><strong>📍 Les 6 régions s'affrontent</strong></p>
+                        <p>Finales régionales dans chaque chef-lieu</p>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Savanes → Dapaong</li>
+                            <li>Kara → Kara</li>
+                            <li>Centrale → Sokodé</li>
+                            <li>Plateaux → Atakpamé</li>
+                            <li>Maritime → Tsévié</li>
+                            <li>Golfe → Lomé</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <h3>Phase 5: GRANDE FINALE</h3>
+                        <span class="phase-date">15 Mai 2025</span>
+                    </div>
+                    <div class="phase-body">
+                        <p><strong>📍 Palais des Congrès, Lomé</strong></p>
+                        <p>Champions de chaque région</p>
+                        <p><strong>Dotations :</strong> Bourses, ordinateurs, tablettes</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CLASSEMENTS -->
+        <section id="classements" class="section">
+            <h2 style="color: var(--primary); text-align: center; margin-bottom: 2rem;">📊 Classements officiels</h2>
+            
+            <div class="filters-bar">
+                <select class="filter-select" id="phaseFilter" onchange="updateRankings()">
+                    <option value="interclasses">Interclasses</option>
+                    <option value="interetablissements">Inter-établissements</option>
+                    <option value="interinspections">Inter-inspections</option>
+                    <option value="interregions">Inter-régions</option>
+                    <option value="finale">Finale nationale</option>
+                </select>
+                
+                <select class="filter-select" id="regionFilter" onchange="updateRankings()">
+                    <option value="all">Toutes les régions</option>
+                    <option value="savanes">Savanes</option>
+                    <option value="kara">Kara</option>
+                    <option value="centrale">Centrale</option>
+                    <option value="plateaux">Plateaux</option>
+                    <option value="maritime">Maritime</option>
+                    <option value="golfe">Golfe/Lomé</option>
+                </select>
+                
+                <select class="filter-select" id="cycleFilter" onchange="updateRankings()">
+                    <option value="all">Tous les cycles</option>
+                    <option value="college">Collège</option>
+                    <option value="lycee">Lycée</option>
+                </select>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="ranking-table" id="rankingTable">
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Équipe/Établissement</th>
+                            <th>Ville</th>
+                            <th>Inspection/DRE</th>
+                            <th>Région</th>
+                            <th>Niveau</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingBody">
+                        <!-- Rempli par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- INSCRIPTION -->
+        <section id="inscription" class="section">
+            <div class="form-container">
+                <h2 class="form-title">📝 Formulaire d'inscription</h2>
+                
+                <div class="payment-section">
+                    <h3>💰 Frais d'inscription</h3>
+                    <div class="payment-amount">10 000 FCFA</div>
+                    <p>par équipe (3 à 5 participants)</p>
+                    <div class="yas-number">📲 +228 92 87 16 05</div>
+                    <p>Effectuez le paiement par Yas et conservez la référence</p>
+                </div>
+                
+                <form id="inscriptionForm" onsubmit="handleInscription(event)">
+                    <!-- Établissement -->
+                    <div class="form-section">
+                        <h3>🏫 Établissement</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nom de l'établissement *</label>
+                                <input type="text" id="etablissement" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Type *</label>
+                                <select id="typeEtablissement" required>
+                                    <option value="">Sélectionnez</option>
+                                    <option value="public">Public</option>
+                                    <option value="prive">Privé</option>
+                                    <option value="confessionnel">Confessionnel</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Ville *</label>
+                                <input type="text" id="ville" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Région *</label>
+                                <select id="region" required>
+                                    <option value="">Sélectionnez</option>
+                                    <option value="savanes">Savanes</option>
+                                    <option value="kara">Kara</option>
+                                    <option value="centrale">Centrale</option>
+                                    <option value="plateaux">Plateaux</option>
+                                    <option value="maritime">Maritime</option>
+                                    <option value="golfe">Golfe (Grand Lomé)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Inspection *</label>
+                                <input type="text" id="inspection" required placeholder="Ex: Lomé-Commune">
+                            </div>
+                            <div class="form-group">
+                                <label>Téléphone *</label>
+                                <input type="tel" id="contactEtablissement" required placeholder="90 00 00 00">
+                            </div>
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" id="emailEtablissement" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Professeur responsable -->
+                    <div class="form-section">
+                        <h3>👨‍🏫 Professeur responsable</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nom et prénoms *</label>
+                                <input type="text" id="professeurResponsable" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Contact *</label>
+                                <input type="tel" id="contactProfesseur" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" id="emailProfesseur" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cycle et série -->
+                    <div class="form-section">
+                        <h3>📚 Cycle de participation</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Cycle *</label>
+                                <div class="radio-group">
+                                    <label>
+                                        <input type="radio" name="cycle" value="college" required onchange="toggleCycle('college')"> Collège
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="cycle" value="lycee" required onchange="toggleCycle('lycee')"> Lycée
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" id="collegeClasseGroup" style="display: none;">
+                                <label>Classe *</label>
+                                <select id="collegeClasse">
+                                    <option value="">Sélectionnez</option>
+                                    <option value="6eme">6ème</option>
+                                    <option value="5eme">5ème</option>
+                                    <option value="4eme">4ème</option>
+                                    <option value="3eme">3ème</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" id="lyceeNiveauGroup" style="display: none;">
+                                <label>Niveau *</label>
+                                <select id="lyceeNiveau" onchange="updateLyceeSeries()">
+                                    <option value="">Sélectionnez</option>
+                                    <option value="seconde">Seconde</option>
+                                    <option value="premiere">Première</option>
+                                    <option value="terminale">Terminale</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" id="serieGroup" style="display: none;">
+                                <label>Série *</label>
+                                <select id="serie">
+                                    <option value="">Sélectionnez</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Participants -->
+                    <div class="form-section">
+                        <h3>👥 Participants</h3>
+                        <p><em>Minimum 3 participants, maximum 5</em></p>
+                        
+                        <div id="participants-container"></div>
+                        
+                        <button type="button" class="add-btn" onclick="addParticipant()">
+                            ➕ Ajouter un participant
+                        </button>
+                        <p id="participantCount" style="margin-top: 0.5rem; color: var(--info);"></p>
+                    </div>
+                    
+                    <!-- Paiement -->
+                    <div class="form-section">
+                        <h3>💰 Confirmation de paiement</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Référence de transaction Yas *</label>
+                                <input type="text" id="referencePaiement" required placeholder="Ex: YAS123456">
+                            </div>
+                            <div class="form-group">
+                                <label>Date de paiement *</label>
+                                <input type="date" id="datePaiement" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Montant payé *</label>
+                                <input type="number" id="montantPaye" value="10000" readonly>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem;">
+                            <label>
+                                <input type="checkbox" id="paymentConfirm" required> Je confirme avoir effectué le paiement de <strong>10 000 FCFA</strong> au <strong>+228 92 87 16 05</strong>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Conditions -->
+                    <div class="form-section">
+                        <div style="margin-bottom: 0.8rem;">
+                            <label>
+                                <input type="checkbox" required> Je certifie l'exactitude des informations fournies
+                            </label>
+                        </div>
+                        <div style="margin-bottom: 0.8rem;">
+                            <label>
+                                <input type="checkbox" required> J'accepte le règlement de la compétition
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" required> J'autorise l'utilisation des données pour le classement
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-large" id="submitBtn">✅ Soumettre l'inscription</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- COLLEGE -->
+        <section id="college" class="section">
+            <h2 style="color: var(--primary); text-align: center; margin-bottom: 2rem;">🏫 Niveau Collège</h2>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap;">
+                <button class="btn" onclick="loadCollegeContent('6eme')">6ème</button>
+                <button class="btn" onclick="loadCollegeContent('5eme')">5ème</button>
+                <button class="btn" onclick="loadCollegeContent('4eme')">4ème</button>
+                <button class="btn" onclick="loadCollegeContent('3eme')">3ème</button>
+            </div>
+            
+            <div id="collegeContent" style="text-align: center; padding: 3rem;">
+                <p>Sélectionnez une classe pour voir les exercices</p>
+            </div>
+        </section>
+        
+        <!-- LYCEE -->
+        <section id="lycee" class="section">
+            <h2 style="color: var(--primary); text-align: center; margin-bottom: 2rem;">📚 Niveau Lycée</h2>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap;">
+                <button class="btn" onclick="loadLyceeContent('seconde')">Seconde</button>
+                <button class="btn" onclick="loadLyceeContent('premiere')">Première</button>
+                <button class="btn" onclick="loadLyceeContent('terminale')">Terminale</button>
+            </div>
+            
+            <div id="lyceeContent">
+                <!-- Le contenu sera chargé dynamiquement -->
+            </div>
+        </section>
+        
+        <!-- RESSOURCES -->
+        <section id="ressources" class="section">
+            <h2 style="color: var(--primary); text-align: center; margin-bottom: 2rem;">📚 Ressources pédagogiques</h2>
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">📐</span>
+                        <h3 class="card-title">Mathématiques</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul style="list-style: none;">
+                            <li>📘 Cours par niveau</li>
+                            <li>📝 Exercices corrigés</li>
+                            <li>📊 Annales BFEM/BAC</li>
+                        </ul>
+                        <button class="game-btn maths" style="margin-top: 1rem;" onclick="window.location.href='jeux.html#maths'">
+                            🎮 Jeux Maths
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">⚛️</span>
+                        <h3 class="card-title">Sciences Physiques</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul style="list-style: none;">
+                            <li>🔬 Cours et TP</li>
+                            <li>⚡ Formulaires</li>
+                            <li>🧪 Simulations</li>
+                        </ul>
+                        <button class="game-btn physique" style="margin-top: 1rem;" onclick="window.location.href='jeux.html#physique'">
+                            🎮 Jeux Physique
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔬</span>
+                        <h3 class="card-title">SVT</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul style="list-style: none;">
+                            <li>🌿 Biologie</li>
+                            <li>⛰️ Géologie</li>
+                            <li>🧬 Génétique</li>
+                        </ul>
+                        <button class="game-btn svt" style="margin-top: 1rem;" onclick="window.location.href='jeux.html#svt'">
+                            🎮 Jeux SVT
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- JEUX EN LIGNE -->
+        <section id="jeux" class="section">
+            <h2 style="color: var(--primary); text-align: center; margin-bottom: 2rem;">🎮 Jeux éducatifs en ligne</h2>
+            
+            <div class="game-buttons">
+                <button class="game-btn maths" onclick="window.location.href='jeux.html#maths'">
+                    🧮 Mathématiques
+                </button>
+                <button class="game-btn physique" onclick="window.location.href='jeux.html#physique'">
+                    ⚛️ Sciences Physiques
+                </button>
+                <button class="game-btn svt" onclick="window.location.href='jeux.html#svt'">
+                    🔬 SVT
+                </button>
+            </div>
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <h3>🎯 Mathématiques</h3>
+                    <p>Jeux interactifs pour tous les niveaux</p>
+                    <ul>
+                        <li>Calcul mental</li>
+                        <li>Géométrie dynamique</li>
+                        <li>Équations et fonctions</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🔬 Sciences Physiques</h3>
+                    <p>Simulations et expériences virtuelles</p>
+                    <ul>
+                        <li>Circuits électriques</li>
+                        <li>Mécanique</li>
+                        <li>Chimie organique</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🌿 SVT</h3>
+                    <p>Découverte du monde vivant</p>
+                    <ul>
+                        <li>Biologie virtuelle</li>
+                        <li>Classification</li>
+                        <li>Géologie interactive</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>SCIENCES POUR NOUS</h3>
+                <p>🇹🇬 Plateforme togolaise de compétitions scientifiques</p>
+                <p>📧 contact@sciencespournous.tg</p>
+                <p>📞 +228 92 87 16 05</p>
+            </div>
+            <div class="footer-section">
+                <h3>Paiement</h3>
+                <p><strong>Yas :</strong> +228 92 87 16 05</p>
+                <p><strong>Frais :</strong> 10 000 FCFA/équipe</p>
+                <p><strong>Référence :</strong> À conserver</p>
+            </div>
+            <div class="footer-section">
+                <h3>Liens utiles</h3>
+                <a href="#" onclick="window.location.href='jeux.html'">🎮 Jeux éducatifs</a>
+                <a href="#">Ministère de l'Éducation</a>
+                <a href="#">Directions Régionales</a>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2024 SCIENCES POUR NOUS - Tous droits réservés
+        </div>
+    </footer>
+    
+    <div id="notification" class="notification" style="display: none;"></div>
+    
+    <script>
+        // ========== DONNÉES ==========
+        const yasNumber = "+22892871605";
+        const fraisInscription = 10000;
+        let participantCount = 0;
+        const maxParticipants = 5;
+        const minParticipants = 3;
+        
+        // Données des classements
+        const rankingsData = {
+            interclasses: [
+                { rang: 1, equipe: "Lycée Tokoin", ville: "Lomé", inspection: "Lomé-Commune", region: "Golfe", niveau: "Lycée", score: 1245 },
+                { rang: 2, equipe: "CEG Attiegou", ville: "Lomé", inspection: "Golfe", region: "Golfe", niveau: "Collège", score: 1180 }
+            ],
+            interetablissements: [
+                { rang: 1, equipe: "Lycée Tokoin", ville: "Lomé", inspection: "Lomé-Commune", region: "Golfe", niveau: "Lycée", score: 450 }
+            ],
+            interinspections: [
+                { rang: 1, equipe: "DRE Golfe", ville: "Lomé", inspection: "DRE Golfe", region: "Golfe", niveau: "Mixte", score: 880 }
+            ],
+            interregions: [
+                { rang: 1, equipe: "Région Golfe", ville: "Lomé", inspection: "Golfe", region: "Golfe", niveau: "Mixte", score: 1250 }
+            ],
+            finale: [
+                { rang: 1, equipe: "Golfe", ville: "Lomé", inspection: "Golfe", region: "Golfe", niveau: "Mixte", score: 1560 }
+            ]
+        };
+        
+        // Données des séries et matières pour la Seconde
+        const secondeData = {
+            scientifique: {
+                nom: "Scientifique (CD)",
+                matieres: [
+                    {
+                        nom: "Mathématiques",
+                        icon: "🧮",
+                        couleur: "maths",
+                        topics: [
+                            "Généralités sur les fonctions",
+                            "Équations et inéquations",
+                            "Vecteurs et translations",
+                            "Statistiques",
+                            "Probabilités"
+                        ]
+                    },
+                    {
+                        nom: "Sciences Physiques",
+                        icon: "⚛️",
+                        couleur: "physique",
+                        topics: [
+                            "Chimie : Atomes et molécules",
+                            "Chimie : Solutions aqueuses",
+                            "Physique : Forces et mouvements",
+                            "Physique : Énergie mécanique",
+                            "Optique : Lentilles minces"
+                        ]
+                    },
+                    {
+                        nom: "SVT",
+                        icon: "🔬",
+                        couleur: "svt",
+                        topics: [
+                            "Biologie : Cellule et ADN",
+                            "Biologie : Reproduction",
+                            "Géologie : Structure de la Terre",
+                            "Géologie : Roches et minéraux",
+                            "Écologie : Écosystèmes"
+                        ]
+                    }
+                ]
+            },
+            litteraire: {
+                nom: "Littéraire (L)",
+                matieres: [
+                    {
+                        nom: "Mathématiques",
+                        icon: "🧮",
+                        couleur: "maths",
+                        topics: [
+                            "Statistiques descriptives",
+                            "Probabilités simples",
+                            "Pourcentages et taux",
+                            "Suites numériques",
+                            "Fonctions linéaires"
+                        ]
+                    },
+                    {
+                        nom: "Sciences Physiques",
+                        icon: "⚛️",
+                        couleur: "physique",
+                        topics: [
+                            "Notions de base en chimie",
+                            "Phénomènes naturels",
+                            "Électricité domestique",
+                            "Astronomie élémentaire",
+                            "Environnement et développement durable"
+                        ]
+                    },
+                    {
+                        nom: "SVT",
+                        icon: "🔬",
+                        couleur: "svt",
+                        topics: [
+                            "Biologie humaine",
+                            "Santé et bien-être",
+                            "Nutrition et alimentation",
+                            "Environnement",
+                            "Développement durable"
+                        ]
+                    }
+                ]
+            }
+        };
+        
+        // Données pour Première et Terminale
+        const lyceeData = {
+            premiere: {
+                scientifique: {
+                    nom: "Scientifique (C/D)",
+                    matieres: ["Mathématiques", "Sciences Physiques", "SVT"]
+                },
+                litteraire: {
+                    nom: "Littéraire (A4)",
+                    matieres: ["Mathématiques", "Sciences Physiques", "SVT"]
+                }
+            },
+            terminale: {
+                scientifique: {
+                    nom: "Scientifique (C/D)",
+                    matieres: ["Mathématiques", "Sciences Physiques", "SVT"]
+                },
+                litteraire: {
+                    nom: "Littéraire (A4)",
+                    matieres: ["Mathématiques", "Sciences Physiques", "SVT"]
+                }
+            }
+        };
+        
+        // ========== NAVIGATION ==========
+        function toggleNav() {
+            document.getElementById('navContainer').classList.toggle('show');
+        }
+        
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+            document.getElementById(sectionId).classList.add('active-section');
+            document.getElementById('navContainer').classList.remove('show');
+            
+            if (sectionId === 'classements') {
+                updateRankings();
+            }
+        }
+        
+        // ========== CLASSEMENTS ==========
+        function updateRankings() {
+            const phase = document.getElementById('phaseFilter').value;
+            const region = document.getElementById('regionFilter').value;
+            const cycle = document.getElementById('cycleFilter').value;
+            
+            let data = rankingsData[phase] || [];
+            
+            if (region !== 'all') {
+                data = data.filter(item => item.region.toLowerCase() === region);
+            }
+            
+            if (cycle !== 'all') {
+                data = data.filter(item => item.niveau.toLowerCase().includes(cycle));
+            }
+            
+            const tbody = document.getElementById('rankingBody');
+            tbody.innerHTML = '';
+            
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = index < 3 ? `rank-${index+1}` : '';
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${item.equipe}</strong></td>
+                    <td>${item.ville}</td>
+                    <td>${item.inspection}</td>
+                    <td><span class="region-badge region-${item.region.toLowerCase()}">${item.region}</span></td>
+                    <td>${item.niveau}</td>
+                    <td><strong>${item.score}</strong></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function filterRankings(phase) {
+            showSection('classements');
+            document.getElementById('phaseFilter').value = phase;
+            updateRankings();
+        }
+        
+        // ========== CYCLE ET SÉRIES ==========
+        function toggleCycle(cycle) {
+            document.getElementById('collegeClasseGroup').style.display = cycle === 'college' ? 'block' : 'none';
+            document.getElementById('lyceeNiveauGroup').style.display = cycle === 'lycee' ? 'block' : 'none';
+            
+            if (cycle === 'college') {
+                document.getElementById('serieGroup').style.display = 'none';
+                document.getElementById('collegeClasse').required = true;
+                document.getElementById('lyceeNiveau').required = false;
+                document.getElementById('serie').required = false;
+            } else {
+                document.getElementById('serieGroup').style.display = 'block';
+                document.getElementById('collegeClasse').required = false;
+                document.getElementById('lyceeNiveau').required = true;
+            }
+        }
+        
+        function updateLyceeSeries() {
+            const niveau = document.getElementById('lyceeNiveau').value;
+            const serieSelect = document.getElementById('serie');
+            serieSelect.innerHTML = '<option value="">Sélectionnez</option>';
+            
+            if (niveau === 'seconde') {
+                serieSelect.innerHTML += `
+                    <option value="scientifique">Scientifique (CD)</option>
+                    <option value="litteraire">Littéraire (L)</option>
+                `;
+            } else if (niveau === 'premiere') {
+                serieSelect.innerHTML += `
+                    <option value="scientifique">Scientifique (C/D)</option>
+                    <option value="litteraire">Littéraire (A4)</option>
+                `;
+            } else if (niveau === 'terminale') {
+                serieSelect.innerHTML += `
+                    <option value="scientifique">Scientifique (C/D)</option>
+                    <option value="litteraire">Littéraire (A4)</option>
+                `;
+            }
+            
+            document.getElementById('serie').required = true;
+        }
+        
+        // ========== CONTENU LYCÉE ==========
+        function loadLyceeContent(niveau) {
+            showSection('lycee');
+            const content = document.getElementById('lyceeContent');
+            
+            if (niveau === 'seconde') {
+                content.innerHTML = `
+                    <h3 style="color: var(--primary); text-align: center; margin: 2rem 0;">Classe de Seconde</h3>
+                    
+                    <!-- Sélecteur de série -->
+                    <div class="series-tabs">
+                        <button class="serie-tab scientifique" onclick="showSecondeSerie('scientifique')">Scientifique (CD)</button>
+                        <button class="serie-tab litteraire" onclick="showSecondeSerie('litteraire')">Littéraire (L)</button>
+                    </div>
+                    
+                    <!-- Contenu des matières -->
+                    <div id="seconde-content">
+                        <!-- Sera rempli par JavaScript -->
+                    </div>
+                `;
+                
+                // Afficher la série scientifique par défaut
+                showSecondeSerie('scientifique');
+            } else {
+                // Pour Première et Terminale
+                const niveauData = lyceeData[niveau];
+                content.innerHTML = `
+                    <h3 style="color: var(--primary); text-align: center; margin: 2rem 0;">${niveau.charAt(0).toUpperCase() + niveau.slice(1)}</h3>
+                    
+                    <div class="series-tabs">
+                        <button class="serie-tab scientifique" onclick="showLyceeSerie('${niveau}', 'scientifique')">${niveauData.scientifique.nom}</button>
+                        <button class="serie-tab litteraire" onclick="showLyceeSerie('${niveau}', 'litteraire')">${niveauData.litteraire.nom}</button>
+                    </div>
+                    
+                    <div id="lycee-serie-content">
+                        <div class="subjects-container">
+                            ${niveauData.scientifique.matieres.map(matiere => `
+                                <div class="subject-card ${getMatiereClass(matiere)}">
+                                    <div class="subject-header">
+                                        <span class="subject-icon">${getMatiereIcon(matiere)}</span>
+                                        <span class="subject-title">${matiere}</span>
+                                    </div>
+                                    <div class="subject-content">
+                                        <p>Contenu pédagogique pour ${niveau} - Série Scientifique</p>
+                                        <ul class="topic-list">
+                                            <li>📚 Cours disponibles</li>
+                                            <li>📝 Exercices interactifs</li>
+                                            <li>🎮 Jeux éducatifs</li>
+                                        </ul>
+                                        <button class="game-btn ${getMatiereClass(matiere)}" onclick="window.location.href='jeux.html#${niveau}-${getMatiereClass(matiere)}'">
+                                            🎮 Jeux ${matiere}
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function showSecondeSerie(serie) {
+            const data = secondeData[serie];
+            const container = document.getElementById('seconde-content');
+            
+            // Mettre à jour l'onglet actif
+            document.querySelectorAll('.serie-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Afficher les matières
+            container.innerHTML = `
+                <h4 style="color: var(--primary); margin: 2rem 0 1rem; text-align: center;">Série ${data.nom}</h4>
+                <div class="subjects-container">
+                    ${data.matieres.map(matiere => `
+                        <div class="subject-card ${matiere.couleur}">
+                            <div class="subject-header">
+                                <span class="subject-icon">${matiere.icon}</span>
+                                <span class="subject-title">${matiere.nom}</span>
+                            </div>
+                            <div class="subject-content">
+                                <p><strong>Programme de Seconde - Série ${data.nom}</strong></p>
+                                <ul class="topic-list">
+                                    ${matiere.topics.map(topic => `<li>📌 ${topic}</li>`).join('')}
+                                </ul>
+                                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                                    <button class="game-btn ${matiere.couleur}" onclick="window.location.href='jeux.html#seconde-${matiere.couleur}'">
+                                        🎮 Jeux
+                                    </button>
+                                    <button class="btn btn-outline" onclick="alert('Cours en préparation')">
+                                        📚 Cours
+                                    </button>
+                                    <button class="btn btn-outline" onclick="alert('Exercices en préparation')">
+                                        📝 Exercices
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function showLyceeSerie(niveau, serie) {
+            // Mettre à jour l'onglet actif
+            document.querySelectorAll('.serie-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const niveauData = lyceeData[niveau][serie];
+            const container = document.getElementById('lycee-serie-content');
+            
+            container.innerHTML = `
+                <h4 style="color: var(--primary); margin: 2rem 0 1rem; text-align: center;">${niveauData.nom}</h4>
+                <div class="subjects-container">
+                    ${niveauData.matieres.map(matiere => `
+                        <div class="subject-card ${getMatiereClass(matiere)}">
+                            <div class="subject-header">
+                                <span class="subject-icon">${getMatiereIcon(matiere)}</span>
+                                <span class="subject-title">${matiere}</span>
+                            </div>
+                            <div class="subject-content">
+                                <p>Contenu pédagogique pour ${niveau} - ${niveauData.nom}</p>
+                                <ul class="topic-list">
+                                    <li>📚 Cours disponibles</li>
+                                    <li>📝 Exercices interactifs</li>
+                                    <li>🎮 Jeux éducatifs</li>
+                                </ul>
+                                <div style="margin-top: 1.5rem;">
+                                    <button class="game-btn ${getMatiereClass(matiere)}" onclick="window.location.href='jeux.html#${niveau}-${getMatiereClass(matiere)}'">
+                                        🎮 Jeux ${matiere}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function getMatiereClass(matiere) {
+            if (matiere.includes('Math')) return 'maths';
+            if (matiere.includes('Physique')) return 'physique';
+            return 'svt';
+        }
+        
+        function getMatiereIcon(matiere) {
+            if (matiere.includes('Math')) return '🧮';
+            if (matiere.includes('Physique')) return '⚛️';
+            return '🔬';
+        }
+        
+        // ========== COLLEGE CONTENT ==========
+        function loadCollegeContent(classe) {
+            showSection('college');
+            const content = document.getElementById('collegeContent');
+            content.innerHTML = `
+                <h3 style="color: var(--primary); margin-bottom: 2rem;">Classe de ${classe}</h3>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h4>Mathématiques</h4>
+                        <p>Exercices disponibles prochainement</p>
+                        <button class="game-btn maths" style="margin-top: 1rem;" onclick="window.location.href='jeux.html#college-maths'">
+                            🎮 Jeux
+                        </button>
+                    </div>
+                    <div class="card">
+                        <h4>Sciences Physiques</h4>
+                        <p>Exercices disponibles prochainement</p>
+                        <button class="game-btn physique" style="margin-top: 1rem;" onclick="window.location.href='jeux.html#college-physique'">
+                            🎮 Jeux
+                        </button>
+                    </div>
+                    <div class="card">
+                        <h4>SVT</h4>
+                        <p>Exercices disponibles prochainement</p>
+                        <button class="game-btn svt" style="margin-top: 1rem;" onclick="window.location.href='jeux.html#college-svt'">
+                            🎮 Jeux
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ========== PARTICIPANTS ==========
+        function addParticipant() {
+            if (participantCount >= maxParticipants) {
+                showNotification(`Maximum ${maxParticipants} participants`, 'error');
+                return;
+            }
+            
+            participantCount++;
+            const container = document.getElementById('participants-container');
+            const id = `participant-${participantCount}`;
+            
+            const card = document.createElement('div');
+            card.className = 'participant-card';
+            card.id = id;
+            card.innerHTML = `
+                <div class="participant-header">
+                    <h4>Participant ${participantCount}</h4>
+                    <button type="button" class="remove-btn" onclick="removeParticipant('${id}')">×</button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nom *</label>
+                        <input type="text" name="nom-${participantCount}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Prénom(s) *</label>
+                        <input type="text" name="prenom-${participantCount}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Sexe *</label>
+                        <select name="sexe-${participantCount}" required>
+                            <option value="">Sélectionnez</option>
+                            <option value="M">Masculin</option>
+                            <option value="F">Féminin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Âge *</label>
+                        <input type="number" name="age-${participantCount}" min="10" max="25" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Classe *</label>
+                        <select name="classe-${participantCount}" required>
+                            <option value="">Sélectionnez</option>
+                            <option value="6eme">6ème</option>
+                            <option value="5eme">5ème</option>
+                            <option value="4eme">4ème</option>
+                            <option value="3eme">3ème</option>
+                            <option value="2nde">Seconde</option>
+                            <option value="1ere">Première</option>
+                            <option value="Tle">Terminale</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(card);
+            updateParticipantCount();
+        }
+        
+        function removeParticipant(id) {
+            document.getElementById(id).remove();
+            participantCount--;
+            
+            const cards = document.querySelectorAll('.participant-card');
+            cards.forEach((card, index) => {
+                const newNum = index + 1;
+                card.id = `participant-${newNum}`;
+                card.querySelector('h4').textContent = `Participant ${newNum}`;
+                
+                card.querySelectorAll('input, select').forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        const base = name.split('-')[0];
+                        input.setAttribute('name', `${base}-${newNum}`);
+                    }
+                });
+            });
+            
+            updateParticipantCount();
+        }
+        
+        function updateParticipantCount() {
+            document.getElementById('participantCount').textContent = 
+                `${participantCount}/${maxParticipants} participants (minimum ${minParticipants})`;
+        }
+        
+        // ========== NOTIFICATION ==========
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+        
+        // ========== ENVOI WHATSAPP ==========
+        function sendToWhatsApp(data) {
+            let message = `🔔 *NOUVELLE INSCRIPTION SCIENCES POUR NOUS* 🔔\n\n`;
+            message += `🏫 *Établissement* : ${data.etablissement}\n`;
+            message += `📍 *Ville* : ${data.ville}\n`;
+            message += `🌍 *Région* : ${data.region}\n`;
+            message += `📋 *Inspection* : ${data.inspection}\n`;
+            message += `📞 *Contact* : ${data.contact}\n`;
+            message += `📧 *Email* : ${data.email}\n\n`;
+            message += `👨‍🏫 *Professeur* : ${data.professeur}\n`;
+            message += `📞 *Contact Prof* : ${data.contactProfesseur}\n\n`;
+            message += `📚 *Cycle* : ${data.cycle}\n`;
+            
+            if (data.cycle === 'college') {
+                message += `📖 *Classe* : ${data.niveau}\n`;
+            } else {
+                message += `📖 *Niveau* : ${data.niveau}\n`;
+                message += `📐 *Série* : ${data.serie}\n`;
+            }
+            
+            message += `\n💰 *Paiement* : ${fraisInscription} FCFA\n`;
+            message += `🔢 *Référence* : ${data.referencePaiement}\n`;
+            message += `📅 *Date paiement* : ${data.datePaiement}\n\n`;
+            
+            message += `👥 *Participants (${data.participants.length})* :\n`;
+            data.participants.forEach((p, i) => {
+                message += `${i+1}. ${p.prenom} ${p.nom} - ${p.sexe} - ${p.age} ans - ${p.classe}\n`;
+            });
+            
+            const encoded = encodeURIComponent(message);
+            window.open(`https://wa.me/${yasNumber}?text=${encoded}`, '_blank');
+        }
+        
+        // ========== GESTION INSCRIPTION ==========
+        function handleInscription(event) {
+            event.preventDefault();
+            
+            if (participantCount < minParticipants) {
+                showNotification(`Minimum ${minParticipants} participants requis`, 'error');
+                return;
+            }
+            
+            const paymentConfirm = document.getElementById('paymentConfirm');
+            if (!paymentConfirm.checked) {
+                showNotification('Veuillez confirmer le paiement', 'error');
+                return;
+            }
+            
+            const formData = {
+                etablissement: document.getElementById('etablissement').value,
+                typeEtablissement: document.getElementById('typeEtablissement').value,
+                ville: document.getElementById('ville').value,
+                region: document.getElementById('region').value,
+                inspection: document.getElementById('inspection').value,
+                contact: document.getElementById('contactEtablissement').value,
+                email: document.getElementById('emailEtablissement').value,
+                professeur: document.getElementById('professeurResponsable').value,
+                contactProfesseur: document.getElementById('contactProfesseur').value,
+                emailProfesseur: document.getElementById('emailProfesseur').value,
+                cycle: document.querySelector('input[name="cycle"]:checked')?.value,
+                referencePaiement: document.getElementById('referencePaiement').value,
+                datePaiement: document.getElementById('datePaiement').value,
+                participants: []
+            };
+            
+            if (formData.cycle === 'college') {
+                formData.niveau = document.getElementById('collegeClasse').value;
+            } else {
+                formData.niveau = document.getElementById('lyceeNiveau').value;
+                formData.serie = document.getElementById('serie').value;
+            }
+            
+            for (let i = 1; i <= participantCount; i++) {
+                formData.participants.push({
+                    nom: document.querySelector(`[name="nom-${i}"]`)?.value,
+                    prenom: document.querySelector(`[name="prenom-${i}"]`)?.value,
+                    sexe: document.querySelector(`[name="sexe-${i}"]`)?.value,
+                    age: document.querySelector(`[name="age-${i}"]`)?.value,
+                    classe: document.querySelector(`[name="classe-${i}"]`)?.value
+                });
+            }
+            
+            sendToWhatsApp(formData);
+            showNotification('✅ Inscription envoyée avec succès!');
+            
+            document.getElementById('inscriptionForm').reset();
+            document.getElementById('participants-container').innerHTML = '';
+            participantCount = 0;
+            updateParticipantCount();
+            
+            setTimeout(() => showSection('accueil'), 3000);
+        }
+        
+        // ========== INITIALISATION ==========
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('datePaiement').value = today;
+            
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => addParticipant(), i * 100);
+            }
+            
+            updateRankings();
+        };
+    </script>
+</body>
+</html>

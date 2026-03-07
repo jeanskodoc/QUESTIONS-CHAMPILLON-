@@ -1,0 +1,2896 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>SCIENCES POUR NOUS - Plateforme complète de quiz avec GeoGebra</title>
+    <style>
+        /* ========== VARIABLES ET THEME ========== */
+        :root {
+            --primary: #0b4f6c;
+            --primary-dark: #083b4f;
+            --primary-light: #1a7a9c;
+            --secondary: #f4c542;
+            --secondary-dark: #e0b038;
+            --accent: #d93f3f;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --white: #ffffff;
+            --geogebra: #1a73e8;
+            
+            /* Couleurs par matière */
+            --maths: #0b4f6c;
+            --maths-light: #1a7a9c;
+            --physique: #28a745;
+            --physique-light: #34ce57;
+            --svt: #ff8c00;
+            --svt-light: #ffaa33;
+            
+            /* Couleurs par type de question */
+            --situation: #9b59b6;
+            --qcm: #3498db;
+            --vf: #e67e22;
+            --devinette: #e74c3c;
+            --traditionnelle: #1abc9c;
+            
+            --gradient-maths: linear-gradient(135deg, #0b4f6c 0%, #1a7a9c 100%);
+            --gradient-physique: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+            --gradient-svt: linear-gradient(135deg, #ff8c00 0%, #ffaa33 100%);
+            
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        
+        /* ========== CONTENEUR PRINCIPAL ========== */
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+        
+        /* ========== EN-TÊTE ========== */
+        .game-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .game-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .game-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+        
+        .back-button {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: var(--secondary);
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        /* ========== MINUTEUR ========== */
+        .timer-section {
+            background: white;
+            padding: 2rem;
+            border-bottom: 2px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        .timer-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            background: var(--light);
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            color: var(--primary);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .timer-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .timer-btn.play { background: var(--success); color: white; }
+        .timer-btn.pause { background: var(--warning); color: var(--dark); }
+        .timer-btn.reset { background: var(--accent); color: white; }
+        
+        .timer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .sand-clock {
+            font-size: 2rem;
+            animation: shake 0.5s ease infinite;
+            display: inline-block;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+        }
+        
+        /* ========== SÉLECTEURS ========== */
+        .selectors-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--light);
+            border-bottom: 2px solid #eee;
+            justify-content: center;
+        }
+        
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+        
+        .selector-group label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .custom-select {
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .custom-select:hover {
+            border-color: var(--primary);
+        }
+        
+        .custom-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(11,79,108,0.1);
+        }
+        
+        /* ========== BADGES ========== */
+        .badge-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            justify-content: center;
+        }
+        
+        .badge {
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .badge.maths { background: var(--maths); }
+        .badge.physique { background: var(--physique); }
+        .badge.svt { background: var(--svt); }
+        
+        .badge.situation { background: var(--situation); }
+        .badge.qcm { background: var(--qcm); }
+        .badge.vf { background: var(--vf); }
+        .badge.devinette { background: var(--devinette); }
+        .badge.traditionnelle { background: var(--traditionnelle); }
+        
+        /* ========== SECTION GÉOGEBRA ========== */
+        .geogebra-section {
+            background: white;
+            padding: 1.5rem;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .geogebra-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .geogebra-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--geogebra);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .geogebra-controls {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        
+        .geogebra-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--geogebra);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .geogebra-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            background: #0d5bcc;
+        }
+        
+        .geogebra-btn.secondary {
+            background: var(--secondary);
+            color: var(--dark);
+        }
+        
+        .geogebra-file-input {
+            display: none;
+        }
+        
+        .geogebra-filename {
+            padding: 0.4rem 1rem;
+            background: var(--light);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+        
+        /* Visualiseur GeoGebra */
+        .geogebra-viewer {
+            margin-top: 1.5rem;
+            border: 2px solid var(--geogebra);
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            min-height: 450px;
+            display: none;
+            position: relative;
+            transition: all 0.3s;
+            background: #f0f0f0;
+        }
+        
+        .geogebra-viewer.active {
+            display: block;
+        }
+        
+        .geogebra-viewer.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background: white;
+            margin: 0;
+            border: none;
+            border-radius: 0;
+            padding: 1rem;
+        }
+        
+        .geogebra-toolbar {
+            display: flex;
+            gap: 0.5rem;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 100;
+            background: rgba(255,255,255,0.9);
+            padding: 0.5rem;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+        }
+        
+        .geogebra-tool-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .geogebra-tool-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .geogebra-tool-btn.zoom-in { background: var(--success); }
+        .geogebra-tool-btn.zoom-out { background: var(--warning); }
+        .geogebra-tool-btn.fullscreen { background: var(--geogebra); }
+        .geogebra-tool-btn.close { background: var(--accent); }
+        
+        /* ========== CONTENEUR DE QUESTIONS ========== */
+        .questions-container {
+            padding: 2rem;
+            min-height: 500px;
+        }
+        
+        .current-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .current-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .question-counter {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 6px solid var(--primary);
+            animation: slideIn 0.3s;
+        }
+        
+        .question-card.situation { border-left-color: var(--situation); }
+        .question-card.qcm { border-left-color: var(--qcm); }
+        .question-card.vf { border-left-color: var(--vf); }
+        .question-card.devinette { border-left-color: var(--devinette); }
+        .question-card.traditionnelle { border-left-color: var(--traditionnelle); }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        /* Options pour QCM */
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .option-item {
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .option-item:hover {
+            border-color: var(--primary);
+            background: var(--light);
+        }
+        
+        .option-item.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+        
+        .option-item.correct {
+            border-color: var(--success);
+            background: #d4edda;
+        }
+        
+        .option-item.incorrect {
+            border-color: var(--accent);
+            background: #f8d7da;
+        }
+        
+        /* Pour Vrai/Faux */
+        .vf-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        
+        .vf-btn {
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+        
+        .vf-btn.true {
+            background: var(--success);
+            color: white;
+        }
+        
+        .vf-btn.false {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .vf-btn:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .vf-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Pour les devinettes */
+        .riddle-container {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f4c54220, #f4c54240);
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+        }
+        
+        .riddle-answer {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: var(--border-radius-sm);
+            display: none;
+            border-left: 4px solid var(--devinette);
+        }
+        
+        .riddle-answer.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        /* Pour les questions traditionnelles */
+        .traditional-answer {
+            margin-top: 1.5rem;
+        }
+        
+        .traditional-answer textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            min-height: 150px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .traditional-answer textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(11,79,108,0.1);
+        }
+        
+        /* Boutons d'action */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--dark);
+        }
+        
+        .btn-geogebra {
+            background: var(--geogebra);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* Score */
+        .score-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .score {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 12px;
+            background: #eee;
+            border-radius: 6px;
+            overflow: hidden;
+            min-width: 200px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s;
+        }
+        
+        /* Footer */
+        .game-footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .game-footer a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .timer-display {
+                font-size: 2.5rem;
+                padding: 0.8rem 1.5rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .vf-btn {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+            
+            .selector-group {
+                min-width: 150px;
+            }
+            
+            .geogebra-toolbar {
+                top: 5px;
+                right: 5px;
+            }
+            
+            .geogebra-tool-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- En-tête -->
+        <div class="game-header">
+            <h1>🎮 SCIENCES POUR NOUS</h1>
+            <p>Plateforme complète de quiz avec constructions GeoGebra</p>
+            <a href="#" class="back-button" onclick="window.location.reload()">← Retour à l'accueil</a>
+        </div>
+        
+        <!-- Minuteur -->
+        <div class="timer-section">
+            <div class="timer-title">
+                <span class="sand-clock" id="sandClock">⏳</span>
+                Chronomètre
+            </div>
+            <div class="timer-container">
+                <div class="timer-display" id="timer">00:00</div>
+                <div class="timer-controls">
+                    <button class="timer-btn play" onclick="startTimer()">
+                        <span>▶️</span> Démarrer
+                    </button>
+                    <button class="timer-btn pause" onclick="pauseTimer()">
+                        <span>⏸️</span> Pause
+                    </button>
+                    <button class="timer-btn reset" onclick="resetTimer()">
+                        <span>🔄</span> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sélecteurs -->
+        <div class="selectors-container">
+            <div class="selector-group">
+                <label>📚 Matière</label>
+                <select class="custom-select" id="subjectSelect" onchange="updateQuestions()">
+                    <option value="maths">Mathématiques</option>
+                    <option value="physique">Sciences Physiques</option>
+                    <option value="svt">SVT</option>
+                </select>
+            </div>
+            
+            <div class="selector-group">
+                <label>🎯 Classe</label>
+                <select class="custom-select" id="classSelect" onchange="updateQuestions()">
+                    <option value="6eme">6ème</option>
+                    <option value="5eme">5ème</option>
+                    <option value="4eme">4ème</option>
+                    <option value="3eme">3ème</option>
+                    <option value="2nde_CD">2nde CD</option>
+                    <option value="2nde_L">2nde L</option>
+                    <option value="1ere_A4">1ère A4</option>
+                    <option value="1ere_C4">1ère C4</option>
+                    <option value="1ere_D">1ère D</option>
+                    <option value="tle_A4">Tle A4</option>
+                    <option value="tle_C4">Tle C4</option>
+                    <option value="tle_D">Tle D</option>
+                </select>
+            </div>
+            
+            <div class="selector-group">
+                <label>❓ Type de question</label>
+                <select class="custom-select" id="typeSelect" onchange="updateQuestions()">
+                    <option value="all">Tous les types</option>
+                    <option value="situation">Situation d'évaluation</option>
+                    <option value="qcm">Choisir la bonne réponse</option>
+                    <option value="vf">Vrai ou Faux</option>
+                    <option value="devinette">Devinette</option>
+                    <option value="traditionnelle">Question traditionnelle</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Badges de sélection -->
+        <div class="badge-container" id="selectionBadges">
+            <span class="badge maths" id="badgeMatiere">Mathématiques</span>
+            <span class="badge" id="badgeClasse" style="background: var(--primary);">6ème</span>
+            <span class="badge" id="badgeType" style="background: var(--secondary); color: var(--dark);">Tous les types</span>
+        </div>
+        
+        <!-- Section GeoGebra -->
+        <div class="geogebra-section">
+            <div class="geogebra-header">
+                <div class="geogebra-title">
+                    <span>📐</span> Constructions GeoGebra interactives
+                </div>
+                <div class="geogebra-controls">
+                    <button class="geogebra-btn" onclick="document.getElementById('geogebraFile').click()">
+                        <span>📂</span> Charger .ggb
+                    </button>
+                    <button class="geogebra-btn secondary" onclick="openGeogebraOnline()">
+                        <span>🌐</span> GeoGebra en ligne
+                    </button>
+                    <input type="file" id="geogebraFile" class="geogebra-file-input" accept=".ggb" onchange="loadGeogebraFile(event)">
+                    <span class="geogebra-filename" id="geogebraFilename">Aucun fichier chargé</span>
+                </div>
+            </div>
+            
+            <!-- Visualiseur GeoGebra -->
+            <div class="geogebra-viewer" id="geogebraViewer">
+                <div class="geogebra-toolbar">
+                    <button class="geogebra-tool-btn zoom-in" onclick="zoomIn()" title="Zoom avant">➕</button>
+                    <button class="geogebra-tool-btn zoom-out" onclick="zoomOut()" title="Zoom arrière">➖</button>
+                    <button class="geogebra-tool-btn fullscreen" onclick="toggleFullscreen()" title="Plein écran">⛶</button>
+                    <button class="geogebra-tool-btn close" onclick="closeGeogebra()" title="Fermer">✕</button>
+                </div>
+                <div id="geogebraApplet" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+        
+        <!-- Score et progression -->
+        <div class="score-container">
+            <div>
+                <span style="font-weight: 600;">Score:</span>
+                <span class="score" id="score">0</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+            <div>
+                <span id="currentQuestion">0</span>/<span id="totalQuestions">0</span>
+            </div>
+        </div>
+        
+        <!-- Conteneur de questions -->
+        <div class="questions-container" id="questionsContainer">
+            <div style="text-align: center; padding: 3rem; color: var(--gray);">
+                <p>Sélectionnez une matière, une classe et un type de question pour commencer</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="game-footer">
+            <p>© 2024 SCIENCES POUR NOUS - Tous types de questions avec GeoGebra intégré</p>
+        </div>
+    </div>
+    
+    <!-- Script GeoGebra -->
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+    
+    <script>
+        // ========== BASE DE DONNÉES COMPLÈTE ==========
+        const questionsDB = {
+            maths: {
+                '6eme': {
+                    situation: [
+                        {
+                            id: 1,
+                            type: 'situation',
+                            question: "Dans la cour de l'école, il y a 25 élèves. 12 jouent au football, 8 jouent à la marelle et les autres lisent. Combien d'élèves lisent ?",
+                            answer: "5 élèves",
+                            explication: "25 - (12 + 8) = 25 - 20 = 5 élèves"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 2,
+                            type: 'qcm',
+                            question: "Combien font 15 + 27 ?",
+                            options: ["32", "42", "52", "62"],
+                            correct: "42",
+                            explication: "15 + 27 = 42"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 3,
+                            type: 'vf',
+                            question: "Un triangle a toujours 4 côtés.",
+                            answer: false,
+                            explication: "Un triangle a 3 côtés"
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 4,
+                            type: 'devinette',
+                            question: "Je suis un nombre. Si on m'ajoute 5, je deviens 12. Qui suis-je ?",
+                            answer: "7",
+                            explication: "12 - 5 = 7"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 5,
+                            type: 'traditionnelle',
+                            question: "Calcule le périmètre d'un carré de côté 6 cm.",
+                            answer: "24 cm",
+                            correction: "P = 4 × 6 = 24 cm"
+                        }
+                    ]
+                },
+                '5eme': {
+                    situation: [
+                        {
+                            id: 6,
+                            type: 'situation',
+                            question: "Dans une classe de 28 élèves, les 3/4 sont des filles. Combien y a-t-il de garçons ?",
+                            answer: "7 garçons",
+                            explication: "Filles: 3/4 × 28 = 21, Garçons: 28 - 21 = 7"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 7,
+                            type: 'qcm',
+                            question: "30% de 200 égale ?",
+                            options: ["60", "30", "40", "50"],
+                            correct: "60",
+                            explication: "30% de 200 = 0,3 × 200 = 60"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 8,
+                            type: 'vf',
+                            question: "3/4 est plus grand que 2/3",
+                            answer: true,
+                            explication: "3/4 = 0,75 et 2/3 ≈ 0,667"
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 9,
+                            type: 'devinette',
+                            question: "Je suis une fraction. Mon numérateur est 5 et mon dénominateur est 8. Qui suis-je ?",
+                            answer: "5/8"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 10,
+                            type: 'traditionnelle',
+                            question: "Calcule l'aire d'un rectangle de longueur 8 cm et de largeur 5 cm.",
+                            answer: "40 cm²",
+                            correction: "A = 8 × 5 = 40 cm²"
+                        }
+                    ]
+                },
+                '4eme': {
+                    situation: [
+                        {
+                            id: 11,
+                            type: 'situation',
+                            question: "Un commerçant achète 50 kg de riz à 300 F le kg. Il revend le tout à 350 F le kg. Quel est son bénéfice ?",
+                            answer: "2 500 F",
+                            explication: "Achat: 50×300=15000, Vente: 50×350=17500, Bénéfice: 2500"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 12,
+                            type: 'qcm',
+                            question: "(-5) + (-3) = ?",
+                            options: ["-8", "8", "-2", "2"],
+                            correct: "-8"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 13,
+                            type: 'vf',
+                            question: "Le produit de deux nombres négatifs est positif.",
+                            answer: true,
+                            explication: "(-) × (-) = (+)"
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 14,
+                            type: 'devinette',
+                            question: "Je suis un nombre entier. Mon double diminué de 3 donne 7. Qui suis-je ?",
+                            answer: "5",
+                            explication: "2x - 3 = 7 → x = 5"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 15,
+                            type: 'traditionnelle',
+                            question: "Calcule le volume d'un cube d'arête 4 cm.",
+                            answer: "64 cm³",
+                            correction: "V = 4³ = 64 cm³"
+                        }
+                    ]
+                },
+                '3eme': {
+                    situation: [
+                        {
+                            id: 16,
+                            type: 'situation',
+                            question: "Dans un triangle rectangle, les côtés de l'angle droit mesurent 6 cm et 8 cm. Calcule l'hypoténuse.",
+                            answer: "10 cm",
+                            explication: "h² = 6² + 8² = 100, h = 10 cm"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 17,
+                            type: 'qcm',
+                            question: "Factoriser x² - 9",
+                            options: ["(x-3)²", "(x+3)(x-3)", "(x+3)²", "x(x-9)"],
+                            correct: "(x+3)(x-3)"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 18,
+                            type: 'vf',
+                            question: "La racine carrée de 144 est 12.",
+                            answer: true,
+                            explication: "12² = 144"
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 19,
+                            type: 'devinette',
+                            question: "Je suis un nombre. Si on me multiplie par 3 et qu'on ajoute 2, on obtient 17. Qui suis-je ?",
+                            answer: "5",
+                            explication: "3x + 2 = 17 → x = 5"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 20,
+                            type: 'traditionnelle',
+                            question: "Calcule le volume d'une sphère de rayon 3 cm (π ≈ 3,14).",
+                            answer: "113,04 cm³",
+                            correction: "V = 4/3 × π × 27 = 36π ≈ 113,04 cm³"
+                        }
+                    ]
+                },
+                '2nde_CD': {
+                    situation: [
+                        {
+                            id: 21,
+                            type: 'situation',
+                            question: "Une entreprise produit x articles. Le coût est C(x)=x²+5x+100 et la recette R(x)=20x. Détermine le nombre d'articles pour être bénéficiaire.",
+                            answer: "x > 10",
+                            explication: "Bénéfice = R(x) - C(x) = 20x - (x²+5x+100) = -x²+15x-100 > 0 pour x entre 5 et 10, donc x > 10"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 22,
+                            type: 'qcm',
+                            question: "Résoudre x² = 16",
+                            options: ["x=4", "x=-4", "x=±4", "x=8"],
+                            correct: "x=±4"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 23,
+                            type: 'vf',
+                            question: "La fonction f(x)=2x+3 est affine.",
+                            answer: true,
+                            explication: "Elle est de la forme ax+b"
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 24,
+                            type: 'devinette',
+                            question: "Je suis une fonction affine telle que f(0)=2 et f(1)=5. Mon expression ?",
+                            answer: "f(x)=3x+2"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 25,
+                            type: 'traditionnelle',
+                            question: "Détermine l'équation de la droite passant par A(1,2) et B(3,6).",
+                            answer: "y=2x"
+                        }
+                    ]
+                },
+                '2nde_L': {
+                    situation: [
+                        {
+                            id: 26,
+                            type: 'situation',
+                            question: "Dans une classe de 30 élèves, 40% sont des garçons. Combien y a-t-il de filles ?",
+                            answer: "18 filles",
+                            explication: "Garçons: 30×0.4=12, Filles: 30-12=18"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 27,
+                            type: 'qcm',
+                            question: "Le prix d'un article augmente de 10% puis baisse de 10%. Que devient-il ?",
+                            options: ["Identique", "1% de moins", "1% de plus", "10% de moins"],
+                            correct: "1% de moins",
+                            explication: "1.1×0.9=0.99 soit 1% de moins"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 28,
+                            type: 'vf',
+                            question: "30% de 150 est égal à 45.",
+                            answer: true,
+                            explication: "150×0.3=45"
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 29,
+                            type: 'devinette',
+                            question: "Je suis un pourcentage. Si on m'applique à 200, j'obtiens 50. Qui suis-je ?",
+                            answer: "25%"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 30,
+                            type: 'traditionnelle',
+                            question: "Calcule l'intérêt simple produit par un capital de 100 000 F placé à 5% pendant 2 ans.",
+                            answer: "10 000 F",
+                            correction: "I = C×t×n = 100 000 × 0.05 × 2 = 10 000 F"
+                        }
+                    ]
+                },
+                '1ere_A4': {
+                    situation: [
+                        {
+                            id: 31,
+                            type: 'situation',
+                            question: "Un capital de 500 000 F est placé à intérêts composés au taux annuel de 6%. Calcule le capital obtenu au bout de 3 ans.",
+                            answer: "595 508 F",
+                            explication: "C = 500 000 × 1.06³ = 595 508 F"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 32,
+                            type: 'qcm',
+                            question: "Le taux d'évolution global correspondant à deux hausses successives de 10% est :",
+                            options: ["20%", "21%", "10%", "11%"],
+                            correct: "21%",
+                            explication: "1.1×1.1=1.21 soit +21%"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 33,
+                            type: 'vf',
+                            question: "Pour une suite arithmétique, la différence entre deux termes consécutifs est constante.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 34,
+                            type: 'devinette',
+                            question: "Je suis une suite où chaque terme est égal au précédent multiplié par une constante. Qui suis-je ?",
+                            answer: "Suite géométrique"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 35,
+                            type: 'traditionnelle',
+                            question: "Calcule le terme général d'une suite arithmétique de premier terme 3 et de raison 4.",
+                            answer: "U_n = 3 + 4n"
+                        }
+                    ]
+                },
+                '1ere_C4': {
+                    situation: [
+                        {
+                            id: 36,
+                            type: 'situation',
+                            question: "Une balle est lancée. Sa hauteur est h(t)=-5t²+20t+2. Détermine la hauteur maximale atteinte.",
+                            answer: "22 m",
+                            explication: "Sommet en t=2s, h(2)=22m"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 37,
+                            type: 'qcm',
+                            question: "La dérivée de la fonction f(x)=x³ est :",
+                            options: ["3x²", "x²", "3x", "x⁴/4"],
+                            correct: "3x²"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 38,
+                            type: 'vf',
+                            question: "La fonction exponentielle est toujours positive.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 39,
+                            type: 'devinette',
+                            question: "Ma dérivée est 2x et je m'annule en 0. Qui suis-je ?",
+                            answer: "f(x)=x²"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 40,
+                            type: 'traditionnelle',
+                            question: "Calcule la limite de (x²-1)/(x-1) quand x tend vers 1.",
+                            answer: "2"
+                        }
+                    ]
+                },
+                '1ere_D': {
+                    situation: [
+                        {
+                            id: 41,
+                            type: 'situation',
+                            question: "Dans une classe de 35 élèves, la moyenne en maths est 12. Si on ajoute les notes de deux élèves supplémentaires, la moyenne devient 11,8. Quelle est la moyenne des deux nouveaux élèves ?",
+                            answer: "6,5",
+                            explication: "Total initial: 35×12=420, nouveau total: 37×11,8=436,6, somme des 2 nouvelles notes: 16,6, moyenne: 8,3"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 42,
+                            type: 'qcm',
+                            question: "La variance d'une série statistique est :",
+                            options: ["L'écart-type au carré", "La moyenne des écarts à la moyenne", "L'étendue", "L'écart moyen"],
+                            correct: "L'écart-type au carré"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 43,
+                            type: 'vf',
+                            question: "La médiane est toujours inférieure à la moyenne.",
+                            answer: false
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 44,
+                            type: 'devinette',
+                            question: "Je suis une valeur qui partage une série statistique en deux parties égales. Qui suis-je ?",
+                            answer: "La médiane"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 45,
+                            type: 'traditionnelle',
+                            question: "Calcule l'écart-type d'une série de variance 25.",
+                            answer: "5"
+                        }
+                    ]
+                },
+                'tle_A4': {
+                    situation: [
+                        {
+                            id: 46,
+                            type: 'situation',
+                            question: "Une entreprise a un chiffre d'affaires qui suit une progression géométrique. La première année: 1 000 000 F, la troisième année: 1 210 000 F. Quel est le taux de croissance annuel ?",
+                            answer: "10%",
+                            explication: "1 000 000 × (1+t)² = 1 210 000 → (1+t)² = 1,21 → 1+t=1,1 → t=0,1"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 47,
+                            type: 'qcm',
+                            question: "Le taux d'intérêt annuel équivalent à un taux mensuel de 1% est environ :",
+                            options: ["12%", "12,68%", "12,55%", "12,3%"],
+                            correct: "12,68%",
+                            explication: "(1,01)^12 ≈ 1,1268"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 48,
+                            type: 'vf',
+                            question: "Pour une suite géométrique de raison q avec |q|<1, la somme des termes tend vers une limite finie.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 49,
+                            type: 'devinette',
+                            question: "Je suis le nombre d'or, solution de l'équation x² = x + 1. Qui suis-je ?",
+                            answer: "φ ≈ 1,618"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 50,
+                            type: 'traditionnelle',
+                            question: "Calcule la somme des 10 premiers termes d'une suite géométrique de premier terme 5 et de raison 2.",
+                            answer: "5115",
+                            correction: "S = 5 × (2^10 - 1)/(2 - 1) = 5 × 1023 = 5115"
+                        }
+                    ]
+                },
+                'tle_C4': {
+                    situation: [
+                        {
+                            id: 51,
+                            type: 'situation',
+                            question: "Une population bactérienne double toutes les 3 heures. Si on part de 1000 bactéries, combien y en aura-t-il au bout de 12 heures ?",
+                            answer: "16 000",
+                            explication: "12h/3h = 4 périodes, donc 1000 × 2^4 = 16 000"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 52,
+                            type: 'qcm',
+                            question: "La dérivée de ln(x) est :",
+                            options: ["1/x", "ln(x)", "e^x", "x"],
+                            correct: "1/x"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 53,
+                            type: 'vf',
+                            question: "La fonction exponentielle croît plus vite que n'importe quelle fonction puissance.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 54,
+                            type: 'devinette',
+                            question: "Je suis la fonction dont la dérivée est égale à la fonction elle-même et qui vaut 1 en 0. Qui suis-je ?",
+                            answer: "La fonction exponentielle (e^x)"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 55,
+                            type: 'traditionnelle',
+                            question: "Calcule l'intégrale de 1 à e de (1/x) dx.",
+                            answer: "1"
+                        }
+                    ]
+                },
+                'tle_D': {
+                    situation: [
+                        {
+                            id: 56,
+                            type: 'situation',
+                            question: "Un test de dépistage a une sensibilité de 95% et une spécificité de 90%. La prévalence de la maladie est de 2%. Quelle est la probabilité qu'une personne testée positive soit réellement malade ?",
+                            answer: "Environ 16,2%",
+                            explication: "Théorème de Bayes: (0,95×0,02)/(0,95×0,02+0,1×0,98) ≈ 0,162"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 57,
+                            type: 'qcm',
+                            question: "L'espérance d'une variable aléatoire suivant une loi binomiale B(n,p) est :",
+                            options: ["np", "np(1-p)", "√(np(1-p))", "n/p"],
+                            correct: "np"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 58,
+                            type: 'vf',
+                            question: "La somme des probabilités de tous les événements élémentaires est égale à 1.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 59,
+                            type: 'devinette',
+                            question: "Je suis une mesure de la dispersion d'une variable aléatoire, égale à la racine carrée de la variance. Qui suis-je ?",
+                            answer: "L'écart-type"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 60,
+                            type: 'traditionnelle',
+                            question: "Calcule la probabilité d'obtenir exactement 3 fois pile sur 5 lancers d'une pièce équilibrée.",
+                            answer: "10/32 = 0,3125",
+                            correction: "C(5,3) × (1/2)^5 = 10 × 1/32 = 10/32"
+                        }
+                    ]
+                }
+            },
+            
+            physique: {
+                '6eme': {
+                    situation: [
+                        {
+                            id: 101,
+                            type: 'situation',
+                            question: "Marie met de l'eau au congélateur. L'eau devient glace. Quel changement d'état ?",
+                            answer: "Solidification"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 102,
+                            type: 'qcm',
+                            question: "Température d'ébullition de l'eau ?",
+                            options: ["0°C", "50°C", "100°C", "200°C"],
+                            correct: "100°C"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 103,
+                            type: 'vf',
+                            question: "L'eau existe sous 3 états.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 104,
+                            type: 'devinette',
+                            question: "Je suis invisible mais je fais bouger les feuilles.",
+                            answer: "Le vent"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 105,
+                            type: 'traditionnelle',
+                            question: "Cite les 3 états de l'eau.",
+                            answer: "Solide, liquide, gazeux"
+                        }
+                    ]
+                },
+                '5eme': {
+                    situation: [
+                        {
+                            id: 106,
+                            type: 'situation',
+                            question: "Thomas branche une lampe avec une pile. Quel est le rôle de la pile ?",
+                            answer: "Fournir de l'énergie électrique"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 107,
+                            type: 'qcm',
+                            question: "Unité de la tension électrique ?",
+                            options: ["Ampère", "Volt", "Ohm", "Watt"],
+                            correct: "Volt"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 108,
+                            type: 'vf',
+                            question: "Le courant circule dans un circuit ouvert.",
+                            answer: false
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 109,
+                            type: 'devinette',
+                            question: "J'attire les objets en fer.",
+                            answer: "L'aimant"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 110,
+                            type: 'traditionnelle',
+                            question: "Cite les éléments d'un circuit électrique simple.",
+                            answer: "Générateur, récepteur, fils, interrupteur"
+                        }
+                    ]
+                },
+                '4eme': {
+                    situation: [
+                        {
+                            id: 111,
+                            type: 'situation',
+                            question: "U=6V, I=0,5A. Calcule R.",
+                            answer: "12 Ω",
+                            explication: "R = U/I = 6/0,5 = 12 Ω"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 112,
+                            type: 'qcm',
+                            question: "Loi d'Ohm ?",
+                            options: ["U=R/I", "U=R×I", "I=R×U", "R=U×I"],
+                            correct: "U=R×I"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 113,
+                            type: 'vf',
+                            question: "La résistance se mesure en Ohms.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 114,
+                            type: 'devinette',
+                            question: "Je mesure la tension électrique.",
+                            answer: "Le voltmètre"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 115,
+                            type: 'traditionnelle',
+                            question: "Différence série/parallèle ?",
+                            answer: "Série: même intensité; Parallèle: même tension"
+                        }
+                    ]
+                },
+                '3eme': {
+                    situation: [
+                        {
+                            id: 116,
+                            type: 'situation',
+                            question: "120 km en 2h. Vitesse moyenne ?",
+                            answer: "60 km/h",
+                            explication: "v = d/t = 120/2 = 60 km/h"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 117,
+                            type: 'qcm',
+                            question: "Unité SI de la vitesse ?",
+                            options: ["km/h", "m/s", "cm/s", "km/s"],
+                            correct: "m/s"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 118,
+                            type: 'vf',
+                            question: "Ec = 1/2 × m × v²",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 119,
+                            type: 'devinette',
+                            question: "Force qui attire vers la Terre.",
+                            answer: "La gravité"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 120,
+                            type: 'traditionnelle',
+                            question: "Calcule Ec pour m=1000kg, v=20m/s",
+                            answer: "200 000 J"
+                        }
+                    ]
+                },
+                '2nde_CD': {
+                    situation: [
+                        {
+                            id: 121,
+                            type: 'situation',
+                            question: "Atome H: Z=1, A=1. Protons, neutrons, électrons ?",
+                            answer: "1 proton, 0 neutron, 1 électron"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 122,
+                            type: 'qcm',
+                            question: "Charge du proton ?",
+                            options: ["Positive", "Négative", "Neutre", "Variable"],
+                            correct: "Positive"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 123,
+                            type: 'vf',
+                            question: "Les électrons tournent autour du noyau.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 124,
+                            type: 'devinette',
+                            question: "Partie centrale de l'atome ?",
+                            answer: "Le noyau"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 125,
+                            type: 'traditionnelle',
+                            question: "Décris la structure de l'atome.",
+                            answer: "Noyau (protons+neutrons) + électrons"
+                        }
+                    ]
+                },
+                '2nde_L': {
+                    situation: [
+                        {
+                            id: 126,
+                            type: 'situation',
+                            question: "Pourquoi voit-on les éclairs avant d'entendre le tonnerre ?",
+                            answer: "La lumière va plus vite que le son",
+                            explication: "Vitesse lumière: 300 000 km/s, son: 340 m/s"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 127,
+                            type: 'qcm',
+                            question: "L'unité de l'énergie est :",
+                            options: ["Le Watt", "Le Joule", "Le Newton", "Le Pascal"],
+                            correct: "Le Joule"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 128,
+                            type: 'vf',
+                            question: "L'énergie se conserve.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 129,
+                            type: 'devinette',
+                            question: "Je suis l'énergie liée au mouvement. Qui suis-je ?",
+                            answer: "L'énergie cinétique"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 130,
+                            type: 'traditionnelle',
+                            question: "Cite deux formes d'énergie.",
+                            answer: "Cinétique, potentielle, thermique, etc."
+                        }
+                    ]
+                },
+                '1ere_A4': {
+                    situation: [
+                        {
+                            id: 131,
+                            type: 'situation',
+                            question: "Une lampe de 100W fonctionne pendant 5 heures. Calcule l'énergie consommée en kWh.",
+                            answer: "0,5 kWh",
+                            explication: "E = P×t = 0,1 kW × 5 h = 0,5 kWh"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 132,
+                            type: 'qcm',
+                            question: "1 kWh équivaut à :",
+                            options: ["1000 J", "3,6×10^6 J", "3600 J", "10^6 J"],
+                            correct: "3,6×10^6 J"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 133,
+                            type: 'vf',
+                            question: "La puissance s'exprime en Watts.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 134,
+                            type: 'devinette',
+                            question: "Je suis le rapport entre l'énergie et le temps. Qui suis-je ?",
+                            answer: "La puissance"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 135,
+                            type: 'traditionnelle',
+                            question: "Calcule la puissance d'un appareil qui consomme 2000 J en 10 s.",
+                            answer: "200 W"
+                        }
+                    ]
+                },
+                '1ere_C4': {
+                    situation: [
+                        {
+                            id: 136,
+                            type: 'situation',
+                            question: "Mélange acide + soude. Réaction exothermique. Observation ?",
+                            answer: "Dégagement de chaleur"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 137,
+                            type: 'qcm',
+                            question: "pH d'une solution acide ?",
+                            options: ["<7", "=7", ">7", "=0"],
+                            correct: "<7"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 138,
+                            type: 'vf',
+                            question: "Une réaction chimique conserve la masse.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 139,
+                            type: 'devinette',
+                            question: "Gaz qui permet la combustion.",
+                            answer: "Le dioxygène (O₂)"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 140,
+                            type: 'traditionnelle',
+                            question: "Qu'est-ce qu'un catalyseur ?",
+                            answer: "Accélère une réaction sans être consommé"
+                        }
+                    ]
+                },
+                '1ere_D': {
+                    situation: [
+                        {
+                            id: 141,
+                            type: 'situation',
+                            question: "Un projectile est lancé avec une vitesse initiale de 20 m/s à un angle de 30°. Calcule la portée.",
+                            answer: "Environ 35,3 m",
+                            explication: "Portée = (v₀² sin(2θ))/g = (400 × sin60°)/9,81 ≈ 35,3 m"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 142,
+                            type: 'qcm',
+                            question: "La deuxième loi de Newton s'écrit :",
+                            options: ["F = ma", "F = mv", "F = m/a", "F = a/m"],
+                            correct: "F = ma"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 143,
+                            type: 'vf',
+                            question: "La quantité de mouvement se conserve dans un système isolé.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 144,
+                            type: 'devinette',
+                            question: "Je suis la tendance d'un objet à conserver sa vitesse. Qui suis-je ?",
+                            answer: "L'inertie"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 145,
+                            type: 'traditionnelle',
+                            question: "Calcule la force nécessaire pour accélérer une masse de 10 kg à 5 m/s².",
+                            answer: "50 N"
+                        }
+                    ]
+                },
+                'tle_A4': {
+                    situation: [
+                        {
+                            id: 146,
+                            type: 'situation',
+                            question: "Une plaque chauffante de puissance 1500 W fonctionne pendant 2h30. Calcule l'énergie consommée en kWh et le coût si le kWh est à 100 F.",
+                            answer: "3,75 kWh, 375 F",
+                            explication: "E = 1,5 kW × 2,5 h = 3,75 kWh, coût = 3,75 × 100 = 375 F"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 147,
+                            type: 'qcm',
+                            question: "Le rendement d'un appareil est :",
+                            options: ["E utile / E totale", "E totale / E utile", "P utile / P totale × 100", "P totale / P utile"],
+                            correct: "P utile / P totale × 100"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 148,
+                            type: 'vf',
+                            question: "L'énergie se mesure en Joules.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 149,
+                            type: 'devinette',
+                            question: "Je suis le rapport entre l'énergie utile et l'énergie totale fournie. Qui suis-je ?",
+                            answer: "Le rendement"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 150,
+                            type: 'traditionnelle',
+                            question: "Quelle est la différence entre énergie primaire et énergie finale ?",
+                            answer: "L'énergie primaire est celle disponible dans la nature, l'énergie finale est celle livrée au consommateur"
+                        }
+                    ]
+                },
+                'tle_C4': {
+                    situation: [
+                        {
+                            id: 151,
+                            type: 'situation',
+                            question: "Fission de l'uranium 235. Écris l'équation simplifiée.",
+                            answer: "²³⁵U + n → ¹⁴⁴Ba + ⁹⁰Kr + 2n"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 152,
+                            type: 'qcm',
+                            question: "La demi-vie est :",
+                            options: ["Temps de doublement", "Temps de demi-désintégration", "Durée de vie totale", "Constante radioactive"],
+                            correct: "Temps de demi-désintégration"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 153,
+                            type: 'vf',
+                            question: "La radioactivité peut être naturelle.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 154,
+                            type: 'devinette',
+                            question: "Particule de lumière sans masse.",
+                            answer: "Le photon"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 155,
+                            type: 'traditionnelle',
+                            question: "Différence fission/fusion ?",
+                            answer: "Fission: division d'un noyau lourd; Fusion: réunion de noyaux légers"
+                        }
+                    ]
+                },
+                'tle_D': {
+                    situation: [
+                        {
+                            id: 156,
+                            type: 'situation',
+                            question: "Un circuit RLC série a R=100Ω, L=0,1H, C=10µF. Calcule la fréquence de résonance.",
+                            answer: "Environ 159 Hz",
+                            explication: "f₀ = 1/(2π√(LC)) = 1/(2π√(0,1×10⁻⁵)) ≈ 159 Hz"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 157,
+                            type: 'qcm',
+                            question: "L'impédance d'un circuit RLC à la résonance est :",
+                            options: ["Minimale", "Maximale", "Nulle", "Infinie"],
+                            correct: "Minimale (égale à R)"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 158,
+                            type: 'vf',
+                            question: "Le facteur de qualité Q est inversement proportionnel à l'amortissement.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 159,
+                            type: 'devinette',
+                            question: "Je suis la fréquence pour laquelle le courant est maximal dans un circuit RLC série. Qui suis-je ?",
+                            answer: "La fréquence de résonance"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 160,
+                            type: 'traditionnelle',
+                            question: "Calcule l'énergie stockée dans une bobine d'inductance 0,2 H parcourue par un courant de 5 A.",
+                            answer: "2,5 J",
+                            correction: "E = 1/2 × L × I² = 0,5 × 0,2 × 25 = 2,5 J"
+                        }
+                    ]
+                }
+            },
+            
+            svt: {
+                '6eme': {
+                    situation: [
+                        {
+                            id: 201,
+                            type: 'situation',
+                            question: "Des fourmis transportent des feuilles. À quel règne appartiennent-elles ?",
+                            answer: "Règne animal"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 202,
+                            type: 'qcm',
+                            question: "De quoi a besoin une plante ?",
+                            options: ["Eau", "Lumière", "Eau, lumière, sels minéraux", "Terre"],
+                            correct: "Eau, lumière, sels minéraux"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 203,
+                            type: 'vf',
+                            question: "Les mammifères pondent des œufs.",
+                            answer: false
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 204,
+                            type: 'devinette',
+                            question: "Je suis verte, j'ai des feuilles, je fais la photosynthèse.",
+                            answer: "Une plante"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 205,
+                            type: 'traditionnelle',
+                            question: "Cite les 5 sens.",
+                            answer: "Vue, ouïe, odorat, goût, toucher"
+                        }
+                    ]
+                },
+                '5eme': {
+                    situation: [
+                        {
+                            id: 206,
+                            type: 'situation',
+                            question: "Dans le frigo: lait, légumes, viande. Aliments d'origine animale ?",
+                            answer: "Lait et viande"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 207,
+                            type: 'qcm',
+                            question: "La digestion commence dans ?",
+                            options: ["Estomac", "Bouche", "Intestin", "Œsophage"],
+                            correct: "Bouche"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 208,
+                            type: 'vf',
+                            question: "Le cœur est un muscle.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 209,
+                            type: 'devinette',
+                            question: "Je pompe le sang dans le corps.",
+                            answer: "Le cœur"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 210,
+                            type: 'traditionnelle',
+                            question: "Rôle de la respiration ?",
+                            answer: "Apporter O₂ et éliminer CO₂"
+                        }
+                    ]
+                },
+                '4eme': {
+                    situation: [
+                        {
+                            id: 211,
+                            type: 'situation',
+                            question: "Au microscope: noyau, cytoplasme, membrane. Type de cellule ?",
+                            answer: "Cellule animale ou végétale"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 212,
+                            type: 'qcm',
+                            question: "La cellule végétale a en plus ?",
+                            options: ["Noyau", "Mitochondrie", "Paroi cellulosique", "Membrane"],
+                            correct: "Paroi cellulosique"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 213,
+                            type: 'vf',
+                            question: "La photosynthèse produit du O₂.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 214,
+                            type: 'devinette',
+                            question: "Unité de base du vivant.",
+                            answer: "La cellule"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 215,
+                            type: 'traditionnelle',
+                            question: "Différence cellule animale/végétale ?",
+                            answer: "Paroi et chloroplastes chez la végétale"
+                        }
+                    ]
+                },
+                '3eme': {
+                    situation: [
+                        {
+                            id: 216,
+                            type: 'situation',
+                            question: "Père yeux marron, mère yeux bleus, enfant yeux marron. Explication ?",
+                            answer: "Gène marron dominant"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 217,
+                            type: 'qcm',
+                            question: "L'ADN est contenu dans ?",
+                            options: ["Cytoplasme", "Noyau", "Membrane", "Ribosomes"],
+                            correct: "Noyau"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 218,
+                            type: 'vf',
+                            question: "Les chromosomes sont de l'ADN condensé.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 219,
+                            type: 'devinette',
+                            question: "Support de l'information génétique.",
+                            answer: "L'ADN"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 220,
+                            type: 'traditionnelle',
+                            question: "Différence génotype/phénotype ?",
+                            answer: "Génotype: gènes; Phénotype: caractères observables"
+                        }
+                    ]
+                },
+                '2nde_CD': {
+                    situation: [
+                        {
+                            id: 221,
+                            type: 'situation',
+                            question: "Forêt: arbres, champignons, insectes, oiseaux. Classe-les.",
+                            answer: "Producteurs: arbres; Consommateurs: insectes, oiseaux; Décomposeurs: champignons"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 222,
+                            type: 'qcm',
+                            question: "La photosynthèse a lieu dans ?",
+                            options: ["Racines", "Feuilles", "Fleurs", "Fruits"],
+                            correct: "Feuilles"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 223,
+                            type: 'vf',
+                            question: "Les champignons sont des végétaux.",
+                            answer: false
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 224,
+                            type: 'devinette',
+                            question: "Je transforme l'énergie solaire en énergie chimique.",
+                            answer: "La photosynthèse"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 225,
+                            type: 'traditionnelle',
+                            question: "Rôle des décomposeurs ?",
+                            answer: "Transforment la matière organique en minérale"
+                        }
+                    ]
+                },
+                '2nde_L': {
+                    situation: [
+                        {
+                            id: 226,
+                            type: 'situation',
+                            question: "Pourquoi les feuilles des arbres changent de couleur en automne ?",
+                            answer: "Diminution de la chlorophylle"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 227,
+                            type: 'qcm',
+                            question: "Le rôle principal des racines est :",
+                            options: ["La photosynthèse", "L'absorption d'eau et sels minéraux", "La reproduction", "La respiration"],
+                            correct: "L'absorption d'eau et sels minéraux"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 228,
+                            type: 'vf',
+                            question: "Les plantes ont besoin de lumière pour vivre.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 229,
+                            type: 'devinette',
+                            question: "Je suis le pigment vert des plantes.",
+                            answer: "La chlorophylle"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 230,
+                            type: 'traditionnelle',
+                            question: "Qu'est-ce que la pollinisation ?",
+                            answer: "Transport du pollen de l'étamine au pistil"
+                        }
+                    ]
+                },
+                '1ere_A4': {
+                    situation: [
+                        {
+                            id: 231,
+                            type: 'situation',
+                            question: "Dans une région, on observe une augmentation des maladies respiratoires. Quelles pourraient être les causes ?",
+                            answer: "Pollution atmosphérique, tabagisme, etc."
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 232,
+                            type: 'qcm',
+                            question: "La couche d'ozone protège contre :",
+                            options: ["Les UV", "Les infrarouges", "Les micro-ondes", "Les ondes radio"],
+                            correct: "Les UV"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 233,
+                            type: 'vf',
+                            question: "L'effet de serre est un phénomène naturel.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 234,
+                            type: 'devinette',
+                            question: "Je suis un gaz à effet de serre produit par la respiration.",
+                            answer: "Le dioxyde de carbone (CO₂)"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 235,
+                            type: 'traditionnelle',
+                            question: "Cite deux causes du réchauffement climatique.",
+                            answer: "Combustion des énergies fossiles, déforestation"
+                        }
+                    ]
+                },
+                '1ere_C4': {
+                    situation: [
+                        {
+                            id: 236,
+                            type: 'situation',
+                            question: "Fécondation: spermatozoïde + ovule = ?",
+                            answer: "Un œuf (zygote)"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 237,
+                            type: 'qcm',
+                            question: "La méiose produit ?",
+                            options: ["2 cellules diploïdes", "4 haploïdes", "2 haploïdes", "4 diploïdes"],
+                            correct: "4 haploïdes"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 238,
+                            type: 'vf',
+                            question: "Les gamètes sont haploïdes.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 239,
+                            type: 'devinette',
+                            question: "Division cellulaire qui produit les gamètes.",
+                            answer: "La méiose"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 240,
+                            type: 'traditionnelle',
+                            question: "Différence mitose/méiose ?",
+                            answer: "Mitose: cellules identiques; Méiose: réduction du nombre de chromosomes"
+                        }
+                    ]
+                },
+                '1ere_D': {
+                    situation: [
+                        {
+                            id: 241,
+                            type: 'situation',
+                            question: "Dans une population, on observe une augmentation de la fréquence d'un allèle. Comment la sélection naturelle l'explique ?",
+                            answer: "Les individus porteurs de cet allèle ont un avantage sélectif"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 242,
+                            type: 'qcm',
+                            question: "La théorie de l'évolution a été proposée par :",
+                            options: ["Pasteur", "Darwin", "Mendel", "Lamarck"],
+                            correct: "Darwin"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 243,
+                            type: 'vf',
+                            question: "L'homme descend du singe.",
+                            answer: false
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 244,
+                            type: 'devinette',
+                            question: "Mécanisme d'adaptation des espèces.",
+                            answer: "La sélection naturelle"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 245,
+                            type: 'traditionnelle',
+                            question: "Explique la dérive génétique.",
+                            answer: "Variation aléatoire de la fréquence des gènes dans une petite population"
+                        }
+                    ]
+                },
+                'tle_A4': {
+                    situation: [
+                        {
+                            id: 246,
+                            type: 'situation',
+                            question: "Une commune constate une augmentation des cas de paludisme. Quelles mesures de prévention proposer ?",
+                            answer: "Lutte antivectorielle, moustiquaires, etc."
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 247,
+                            type: 'qcm',
+                            question: "Le paludisme est transmis par :",
+                            options: ["Un moustique", "Une bactérie", "Un virus", "Un protozoaire"],
+                            correct: "Un moustique (vecteur)"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 248,
+                            type: 'vf',
+                            question: "Le VIH se transmet par voie sexuelle, sanguine et materno-fœtale.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 249,
+                            type: 'devinette',
+                            question: "Je suis un parasite responsable du paludisme.",
+                            answer: "Le plasmodium"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 250,
+                            type: 'traditionnelle',
+                            question: "Différence entre maladie infectieuse et maladie non infectieuse.",
+                            answer: "Infectieuse: due à un agent pathogène; Non infectieuse: due à d'autres causes (génétique, environnement, etc.)"
+                        }
+                    ]
+                },
+                'tle_C4': {
+                    situation: [
+                        {
+                            id: 251,
+                            type: 'situation',
+                            question: "Résistance aux antibiotiques. Comment la sélection naturelle l'explique ?",
+                            answer: "Les bactéries résistantes survivent et se multiplient"
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 252,
+                            type: 'qcm',
+                            question: "Les antibiotiques agissent contre :",
+                            options: ["Les virus", "Les bactéries", "Les champignons", "Les parasites"],
+                            correct: "Les bactéries"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 253,
+                            type: 'vf',
+                            question: "La vaccination stimule le système immunitaire.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 254,
+                            type: 'devinette',
+                            question: "Je suis une protéine produite par le système immunitaire en réponse à un antigène.",
+                            answer: "Un anticorps"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 255,
+                            type: 'traditionnelle',
+                            question: "Explique le principe de la vaccination.",
+                            answer: "Injecter un antigène atténué pour stimuler la production d'anticorps et la mémoire immunitaire"
+                        }
+                    ]
+                },
+                'tle_D': {
+                    situation: [
+                        {
+                            id: 256,
+                            type: 'situation',
+                            question: "Dans une forêt tropicale, on observe une grande biodiversité. Quels facteurs l'expliquent ?",
+                            answer: "Climat favorable, niches écologiques variées, etc."
+                        }
+                    ],
+                    qcm: [
+                        {
+                            id: 257,
+                            type: 'qcm',
+                            question: "La biodiversité comprend :",
+                            options: ["La diversité des espèces", "La diversité génétique", "La diversité des écosystèmes", "Toutes ces réponses"],
+                            correct: "Toutes ces réponses"
+                        }
+                    ],
+                    vf: [
+                        {
+                            id: 258,
+                            type: 'vf',
+                            question: "La déforestation réduit la biodiversité.",
+                            answer: true
+                        }
+                    ],
+                    devinette: [
+                        {
+                            id: 259,
+                            type: 'devinette',
+                            question: "Je suis l'ensemble des êtres vivants et leur environnement.",
+                            answer: "Un écosystème"
+                        }
+                    ],
+                    traditionnelle: [
+                        {
+                            id: 260,
+                            type: 'traditionnelle',
+                            question: "Cite trois menaces sur la biodiversité.",
+                            answer: "Déforestation, pollution, changement climatique, espèces invasives"
+                        }
+                    ]
+                }
+            }
+        };
+        
+        // ========== VARIABLES GLOBALES ==========
+        let currentSubject = 'maths';
+        let currentClass = '6eme';
+        let currentType = 'all';
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let totalQuestions = 0;
+        
+        // Minuteur
+        let timerInterval;
+        let seconds = 0;
+        let isRunning = false;
+        
+        // GeoGebra
+        let ggbApplet = null;
+        let isFullscreen = false;
+        
+        // ========== INITIALISATION ==========
+        window.onload = function() {
+            updateBadges();
+            loadQuestions();
+            updateTimerDisplay();
+        };
+        
+        // ========== MISE À JOUR DES BADGES ==========
+        function updateBadges() {
+            const subjectNames = {
+                'maths': 'Mathématiques',
+                'physique': 'Sciences Physiques',
+                'svt': 'SVT'
+            };
+            
+            const classDisplayNames = {
+                '6eme': '6ème',
+                '5eme': '5ème',
+                '4eme': '4ème',
+                '3eme': '3ème',
+                '2nde_CD': '2nde CD',
+                '2nde_L': '2nde L',
+                '1ere_A4': '1ère A4',
+                '1ere_C4': '1ère C4',
+                '1ere_D': '1ère D',
+                'tle_A4': 'Tle A4',
+                'tle_C4': 'Tle C4',
+                'tle_D': 'Tle D'
+            };
+            
+            document.getElementById('badgeMatiere').textContent = subjectNames[currentSubject] || 'Mathématiques';
+            document.getElementById('badgeClasse').textContent = classDisplayNames[currentClass] || currentClass;
+            
+            const typeSelect = document.getElementById('typeSelect');
+            const typeText = typeSelect.options[typeSelect.selectedIndex]?.text || 'Tous les types';
+            document.getElementById('badgeType').textContent = typeText;
+        }
+        
+        // ========== CHARGEMENT DES QUESTIONS ==========
+        function updateQuestions() {
+            currentSubject = document.getElementById('subjectSelect').value;
+            currentClass = document.getElementById('classSelect').value;
+            currentType = document.getElementById('typeSelect').value;
+            
+            updateBadges();
+            loadQuestions();
+        }
+        
+        function loadQuestions() {
+            const subjectData = questionsDB[currentSubject];
+            if (!subjectData) {
+                showNoQuestions();
+                return;
+            }
+            
+            const classData = subjectData[currentClass];
+            if (!classData) {
+                showNoQuestions();
+                return;
+            }
+            
+            if (currentType === 'all') {
+                currentQuestions = [
+                    ...(classData.situation || []),
+                    ...(classData.qcm || []),
+                    ...(classData.vf || []),
+                    ...(classData.devinette || []),
+                    ...(classData.traditionnelle || [])
+                ];
+            } else {
+                currentQuestions = classData[currentType] || [];
+            }
+            
+            totalQuestions = currentQuestions.length;
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            updateScore();
+            updateProgress();
+            
+            if (totalQuestions > 0) {
+                displayQuestion();
+            } else {
+                showNoQuestions();
+            }
+        }
+        
+        function showNoQuestions() {
+            document.getElementById('questionsContainer').innerHTML = `
+                <div class="question-card" style="text-align: center;">
+                    <h3>Aucune question disponible pour cette sélection</h3>
+                    <p>Choisissez une autre combinaison</p>
+                </div>
+            `;
+            document.getElementById('currentQuestion').textContent = '0';
+            document.getElementById('totalQuestions').textContent = '0';
+        }
+        
+        // ========== AFFICHAGE D'UNE QUESTION ==========
+        function displayQuestion() {
+            if (currentQuestions.length === 0 || currentQuestionIndex >= currentQuestions.length) {
+                showNoQuestions();
+                return;
+            }
+            
+            const question = currentQuestions[currentQuestionIndex];
+            const container = document.getElementById('questionsContainer');
+            
+            let html = `
+                <div class="question-card ${question.type || currentType}">
+                    <div class="question-text">${question.question}</div>
+            `;
+            
+            const questionType = question.type || currentType;
+            
+            switch(questionType) {
+                case 'qcm':
+                    html += `
+                        <div class="options-container" id="optionsContainer">
+                            ${question.options.map(opt => `
+                                <div class="option-item" onclick="selectOption(this, '${opt.replace(/'/g, "\\'")}', '${question.correct.replace(/'/g, "\\'")}')">
+                                    ${opt}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    break;
+                    
+                case 'vf':
+                    html += `
+                        <div class="vf-container">
+                            <button class="vf-btn true" onclick="checkVF(this, true, ${question.answer})">VRAI</button>
+                            <button class="vf-btn false" onclick="checkVF(this, false, ${question.answer})">FAUX</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'devinette':
+                    html += `
+                        <div class="riddle-container">
+                            <button class="btn btn-secondary" onclick="showRiddleAnswer()">
+                                Voir la réponse
+                            </button>
+                            <div class="riddle-answer" id="riddleAnswer">
+                                <strong>Réponse:</strong> ${question.answer}
+                                ${question.explication ? `<br><small>${question.explication}</small>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'traditionnelle':
+                    html += `
+                        <div class="traditional-answer">
+                            <textarea placeholder="Écris ta réponse ici..." id="traditionalAnswer"></textarea>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="checkTraditional()">Vérifier</button>
+                            </div>
+                        </div>
+                        <div id="traditionalFeedback" style="margin-top: 1rem;"></div>
+                    `;
+                    break;
+                    
+                default: // situation
+                    html += `
+                        <div style="background: var(--light); padding: 1.5rem; border-radius: var(--border-radius-sm);">
+                            <p><strong>Réponse attendue:</strong> ${question.answer}</p>
+                            ${question.explication ? `<p><small>${question.explication}</small></p>` : ''}
+                        </div>
+                    `;
+            }
+            
+            // Bouton GeoGebra pour tous les types
+            html += `
+                <div class="action-buttons">
+                    <button class="btn btn-geogebra" onclick="openGeogebraOnline()">
+                        <span>📐</span> Ouvrir GeoGebra
+                    </button>
+                    <button class="btn btn-secondary" onclick="nextQuestion()">
+                        Question suivante →
+                    </button>
+                </div>
+            `;
+            
+            html += `</div>`;
+            container.innerHTML = html;
+            
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            updateProgress();
+        }
+        
+        // ========== FONCTIONS POUR LES DIFFÉRENTS TYPES ==========
+        function selectOption(element, selected, correct) {
+            document.querySelectorAll('.option-item').forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+            
+            if (selected === correct) {
+                element.classList.add('correct');
+                score += 10;
+            } else {
+                element.classList.add('incorrect');
+                document.querySelectorAll('.option-item').forEach(opt => {
+                    if (opt.textContent === correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            updateScore();
+            setTimeout(nextQuestion, 1500);
+        }
+        
+        function checkVF(element, selected, correct) {
+            document.querySelectorAll('.vf-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            if (selected === correct) {
+                element.style.background = 'var(--success)';
+                score += 10;
+            } else {
+                element.style.background = 'var(--accent)';
+                document.querySelectorAll('.vf-btn').forEach(btn => {
+                    if ((btn.classList.contains('true') && correct) || 
+                        (btn.classList.contains('false') && !correct)) {
+                        btn.style.background = 'var(--success)';
+                    }
+                });
+            }
+            
+            updateScore();
+            setTimeout(nextQuestion, 1500);
+        }
+        
+        function showRiddleAnswer() {
+            document.getElementById('riddleAnswer').classList.add('show');
+        }
+        
+        function checkTraditional() {
+            const answer = document.getElementById('traditionalAnswer').value;
+            const question = currentQuestions[currentQuestionIndex];
+            
+            const feedback = document.getElementById('traditionalFeedback');
+            feedback.innerHTML = `
+                <div style="background: var(--light); padding: 1rem; border-radius: var(--border-radius-sm);">
+                    <p><strong>Ta réponse:</strong> ${answer || "(vide)"}</p>
+                    <p><strong>Réponse attendue:</strong> ${question.answer}</p>
+                    ${question.correction ? `<p><small>${question.correction}</small></p>` : ''}
+                </div>
+            `;
+            
+            score += 5;
+            updateScore();
+        }
+        
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                document.getElementById('questionsContainer').innerHTML = `
+                    <div class="question-card" style="text-align: center;">
+                        <h2>🎉 Félicitations !</h2>
+                        <p>Tu as terminé toutes les questions</p>
+                        <p style="font-size: 2.5rem; color: var(--primary);">Score: ${score}/${totalQuestions * 10}</p>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="loadQuestions()">
+                                Recommencer
+                            </button>
+                            <button class="btn btn-geogebra" onclick="openGeogebraOnline()">
+                                Explorer GeoGebra
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            updateProgress();
+        }
+        
+        // ========== MISE À JOUR DU SCORE ==========
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+        
+        function updateProgress() {
+            const progress = totalQuestions > 0 ? ((currentQuestionIndex) / totalQuestions) * 100 : 0;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        // ========== FONCTIONS POUR LE MINUTEUR ==========
+        function updateTimerDisplay() {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            document.getElementById('timer').textContent = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    updateTimerDisplay();
+                    document.getElementById('sandClock').style.animation = 'shake 0.5s ease infinite';
+                }, 1000);
+            }
+        }
+        
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('sandClock').style.animation = 'none';
+        }
+        
+        function resetTimer() {
+            pauseTimer();
+            seconds = 0;
+            updateTimerDisplay();
+        }
+        
+        // ========== FONCTIONS GÉOGEBRA ==========
+        function loadGeogebraFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            document.getElementById('geogebraFilename').textContent = file.name;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result.split(',')[1];
+                showGeogebra(base64Data);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function showGeogebra(base64Data) {
+            const viewer = document.getElementById('geogebraViewer');
+            viewer.classList.add('active');
+            
+            const parameters = {
+                id: "geogebraApplet",
+                width: "100%",
+                height: 400,
+                showMenuBar: true,
+                showAlgebraInput: true,
+                showToolBar: true,
+                enableLabelDrags: true,
+                enableShiftDragZoom: true,
+                enableRightClick: true,
+                capturingThreshold: null,
+                showToolBarHelp: true,
+                errorDialogsActive: true,
+                useBrowserForJS: true,
+                ggbBase64: base64Data
+            };
+            
+            ggbApplet = new GGBApplet(parameters, true);
+            ggbApplet.inject('geogebraApplet');
+        }
+        
+        function openGeogebraOnline() {
+            window.open('https://www.geogebra.org/classic', '_blank');
+        }
+        
+        function closeGeogebra() {
+            document.getElementById('geogebraViewer').classList.remove('active');
+            document.getElementById('geogebraViewer').classList.remove('fullscreen');
+            document.getElementById('geogebraApplet').innerHTML = '';
+            document.getElementById('geogebraFilename').textContent = 'Aucun fichier chargé';
+            ggbApplet = null;
+            isFullscreen = false;
+        }
+        
+        function zoomIn() {
+            if (ggbApplet) {
+                ggbApplet.setCoordSystem(
+                    ggbApplet.getXmin() * 0.8,
+                    ggbApplet.getXmax() * 0.8,
+                    ggbApplet.getYmin() * 0.8,
+                    ggbApplet.getYmax() * 0.8
+                );
+            }
+        }
+        
+        function zoomOut() {
+            if (ggbApplet) {
+                ggbApplet.setCoordSystem(
+                    ggbApplet.getXmin() * 1.2,
+                    ggbApplet.getXmax() * 1.2,
+                    ggbApplet.getYmin() * 1.2,
+                    ggbApplet.getYmax() * 1.2
+                );
+            }
+        }
+        
+        function toggleFullscreen() {
+            const viewer = document.getElementById('geogebraViewer');
+            const applet = document.getElementById('geogebraApplet');
+            
+            if (!isFullscreen) {
+                viewer.classList.add('fullscreen');
+                applet.style.height = 'calc(100vh - 4rem)';
+                if (ggbApplet) {
+                    setTimeout(() => {
+                        ggbApplet.setSize(window.innerWidth - 40, window.innerHeight - 80);
+                    }, 100);
+                }
+                isFullscreen = true;
+            } else {
+                viewer.classList.remove('fullscreen');
+                applet.style.height = '400px';
+                if (ggbApplet) {
+                    setTimeout(() => {
+                        ggbApplet.setSize(applet.clientWidth, 400);
+                    }, 100);
+                }
+                isFullscreen = false;
+            }
+        }
+        
+        // Gestion de la touche Echap pour quitter le plein écran
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isFullscreen) {
+                toggleFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
