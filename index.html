@@ -22,13 +22,13 @@
         }
 
         .container {
-            max-width: min(1100px, 95%);
+            max-width: min(1200px, 98%);
             width: 100%;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: clamp(15px, 4vw, 30px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            padding: clamp(15px, 5vw, 50px);
+            padding: clamp(15px, 4vw, 40px);
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
@@ -36,7 +36,7 @@
         h1 {
             color: #1a1a2e;
             font-size: clamp(1.5rem, 5vw, 2.8rem);
-            margin-bottom: clamp(10px, 3vh, 25px);
+            margin-bottom: clamp(10px, 2vh, 20px);
             font-weight: 700;
             line-height: 1.3;
             word-break: break-word;
@@ -51,40 +51,41 @@
         }
 
         .image-container {
-            margin: clamp(15px, 4vh, 35px) 0;
+            margin: clamp(10px, 3vh, 25px) 0;
             border-radius: clamp(10px, 2vw, 20px);
             overflow: hidden;
             box-shadow: 0 15px 30px -8px rgba(0,0,0,0.3);
             border: 2px solid rgba(255,255,255,0.5);
             background: #f8f9fa;
-            aspect-ratio: 16/9;
             display: flex;
             align-items: center;
             justify-content: center;
+            max-height: 70vh; /* Limite la hauteur max à 70% de l'écran */
         }
 
         .image-container img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto; /* Change de 100% à auto pour garder les proportions */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Change de cover à contain pour voir l'image entière */
             display: block;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .image-container img:hover {
-            transform: scale(1.03);
+            transform: scale(1.02);
         }
 
-        @media (max-width: 480px) {
-            .image-container {
-                aspect-ratio: 4/3;
-            }
+        /* Suppression de l'aspect ratio forcé */
+        .image-container {
+            aspect-ratio: auto; /* Annule l'aspect-ratio précédent */
         }
 
         .description {
             color: #2d3436;
             font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-            margin: clamp(15px, 4vh, 35px) 0;
+            margin: clamp(15px, 3vh, 30px) 0;
             line-height: 1.6;
             max-width: min(700px, 100%);
             margin-left: auto;
@@ -96,7 +97,7 @@
             display: flex;
             justify-content: center;
             gap: clamp(12px, 3vw, 25px);
-            margin-top: clamp(20px, 5vh, 45px);
+            margin-top: clamp(15px, 4vh, 35px);
             flex-wrap: wrap;
         }
 
@@ -147,6 +148,12 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
+        @media (max-width: 480px) {
+            .image-container {
+                max-height: 50vh; /* Plus petit sur mobile */
+            }
+        }
+
         @media (max-width: 380px) {
             .btn {
                 width: 100%;
@@ -155,7 +162,7 @@
         }
 
         .footer-note {
-            margin-top: clamp(20px, 5vh, 40px);
+            margin-top: clamp(15px, 4vh, 30px);
             color: #636e72;
             font-size: clamp(0.75rem, 2vw, 0.9rem);
             padding: 0 10px;
@@ -233,7 +240,7 @@
                 src="jeux.JPEG" 
                 alt="Jeux Sciences Pour Nous - Interface ludique et éducative" 
                 loading="lazy"
-                onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage de présentation%3C/text%3E%3C/svg%3E';"
+                onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage entièrement visible%3C/text%3E%3C/svg%3E';"
             >
         </div>
 
@@ -263,11 +270,11 @@
             
             // Vérification que l'image existe
             if (img.complete && img.naturalHeight === 0) {
-                img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage de présentation%3C/text%3E%3C/svg%3E';
+                img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\' viewBox=\'0 0 400 200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%234158D0\'/%3E%3Ctext x=\'50\' y=\'120\' font-family=\'Arial\' font-size=\'24\' fill=\'white\'%3E🔬 jeux.JPEG%3C/text%3E%3Ctext x=\'50\' y=\'150\' font-family=\'Arial\' font-size=\'18\' fill=\'%23ffffff\'%3EImage entièrement visible%3C/text%3E%3C/svg%3E';
             }
         });
 
-        // Gestion du redimensionnement pour maintenir l'aspect ratio
+        // Gestion du redimensionnement
         let resizeTimeout;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
