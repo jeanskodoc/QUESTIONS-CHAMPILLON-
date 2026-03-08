@@ -99,6 +99,41 @@
             }
         }
         
+        /* ========== BOUTON RETOUR ACCUEIL ========== */
+        .back-to-home {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .back-btn:hover {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: translateX(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .back-btn i {
+            font-size: 1.2rem;
+        }
+        
         /* ========== NAVIGATION ========== */
         nav {
             background: white;
@@ -899,6 +934,13 @@
     </nav>
     
     <main>
+        <!-- BOUTON RETOUR ACCUEIL (visible sur toutes les pages sauf accueil) -->
+        <div class="back-to-home" id="backToHomeBtn" style="display: none;">
+            <button class="back-btn" onclick="showSection('accueil')">
+                <span>←</span> Retour à l'accueil
+            </button>
+        </div>
+        
         <!-- ACCUEIL -->
         <section id="accueil" class="section active-section">
             <div class="hero">
@@ -1619,6 +1661,14 @@
             document.getElementById(sectionId).classList.add('active-section');
             document.getElementById('navContainer').classList.remove('show');
             
+            // Gérer l'affichage du bouton retour à l'accueil
+            const backBtn = document.getElementById('backToHomeBtn');
+            if (sectionId === 'accueil') {
+                backBtn.style.display = 'none';
+            } else {
+                backBtn.style.display = 'flex';
+            }
+            
             if (sectionId === 'classements') {
                 updateRankings();
             }
@@ -1718,8 +1768,8 @@
                     
                     <!-- Sélecteur de série -->
                     <div class="series-tabs">
-                        <button class="serie-tab scientifique" onclick="showSecondeSerie('scientifique')">Scientifique (CD)</button>
-                        <button class="serie-tab litteraire" onclick="showSecondeSerie('litteraire')">Littéraire (L)</button>
+                        <button class="serie-tab scientifique" onclick="showSecondeSerie('scientifique', event)">Scientifique (CD)</button>
+                        <button class="serie-tab litteraire" onclick="showSecondeSerie('litteraire', event)">Littéraire (L)</button>
                     </div>
                     
                     <!-- Contenu des matières -->
@@ -1729,7 +1779,7 @@
                 `;
                 
                 // Afficher la série scientifique par défaut
-                showSecondeSerie('scientifique');
+                showSecondeSerie('scientifique', null);
             } else {
                 // Pour Première et Terminale
                 const niveauData = lyceeData[niveau];
@@ -1737,8 +1787,8 @@
                     <h3 style="color: var(--primary); text-align: center; margin: 2rem 0;">${niveau.charAt(0).toUpperCase() + niveau.slice(1)}</h3>
                     
                     <div class="series-tabs">
-                        <button class="serie-tab scientifique" onclick="showLyceeSerie('${niveau}', 'scientifique')">${niveauData.scientifique.nom}</button>
-                        <button class="serie-tab litteraire" onclick="showLyceeSerie('${niveau}', 'litteraire')">${niveauData.litteraire.nom}</button>
+                        <button class="serie-tab scientifique" onclick="showLyceeSerie('${niveau}', 'scientifique', event)">${niveauData.scientifique.nom}</button>
+                        <button class="serie-tab litteraire" onclick="showLyceeSerie('${niveau}', 'litteraire', event)">${niveauData.litteraire.nom}</button>
                     </div>
                     
                     <div id="lycee-serie-content">
@@ -1768,15 +1818,17 @@
             }
         }
         
-        function showSecondeSerie(serie) {
+        function showSecondeSerie(serie, event) {
             const data = secondeData[serie];
             const container = document.getElementById('seconde-content');
             
             // Mettre à jour l'onglet actif
-            document.querySelectorAll('.serie-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
+            if (event) {
+                document.querySelectorAll('.serie-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
             
             // Afficher les matières
             container.innerHTML = `
@@ -1811,12 +1863,14 @@
             `;
         }
         
-        function showLyceeSerie(niveau, serie) {
+        function showLyceeSerie(niveau, serie, event) {
             // Mettre à jour l'onglet actif
-            document.querySelectorAll('.serie-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
+            if (event) {
+                document.querySelectorAll('.serie-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
             
             const niveauData = lyceeData[niveau][serie];
             const container = document.getElementById('lycee-serie-content');
@@ -2095,6 +2149,9 @@
             }
             
             updateRankings();
+            
+            // Cacher le bouton retour au chargement (on est sur accueil)
+            document.getElementById('backToHomeBtn').style.display = 'none';
         };
     </script>
 </body>
