@@ -1784,6 +1784,7 @@
                 document.getElementById('serieGroup').style.display = 'block';
                 document.getElementById('collegeClasse').required = false;
                 document.getElementById('lyceeNiveau').required = true;
+                document.getElementById('serie').required = true;
             }
         }
         
@@ -1794,8 +1795,8 @@
             
             if (niveau === 'seconde') {
                 serieSelect.innerHTML += `
-                    <option value="scientifique">Scientifique (CD)</option>
-                    <option value="litteraire">Littéraire (L)</option>
+                    <option value="scientifique">Scientifique (C)</option>
+                    <option value="litteraire">Littéraire (A4/L)</option>
                 `;
             } else if (niveau === 'premiere') {
                 serieSelect.innerHTML += `
@@ -1808,8 +1809,6 @@
                     <option value="litteraire">Littéraire (A4)</option>
                 `;
             }
-            
-            document.getElementById('serie').required = true;
         }
         
         // ========== CONTENU LYCÉE ==========
@@ -1823,8 +1822,8 @@
                     
                     <!-- Sélecteur de série -->
                     <div class="series-tabs">
-                        <button class="serie-tab scientifique" onclick="showSecondeSerie('scientifique', event)">Scientifique (CD)</button>
-                        <button class="serie-tab litteraire" onclick="showSecondeSerie('litteraire', event)">Littéraire (L)</button>
+                        <button class="serie-tab scientifique" onclick="showSecondeSerie('scientifique', event)">Scientifique (C)</button>
+                        <button class="serie-tab litteraire" onclick="showSecondeSerie('litteraire', event)">Littéraire (A4/L)</button>
                     </div>
                     
                     <!-- Contenu des matières -->
