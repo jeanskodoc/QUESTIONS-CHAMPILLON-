@@ -733,6 +733,17 @@
             transform: none;
         }
         
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
         /* ========== TABLEAUX ========== */
         .table-responsive {
             overflow-x: auto;
@@ -768,6 +779,50 @@
         .rank-1 { background: linear-gradient(135deg, #ffd70020, #ffd70040); }
         .rank-2 { background: linear-gradient(135deg, #c0c0c020, #c0c0c040); }
         .rank-3 { background: linear-gradient(135deg, #cd7f3220, #cd7f3240); }
+        
+        /* ========== PHASES CONTAINER ========== */
+        .phases-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .phase-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .phase-header {
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        
+        .phase-header h3 {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .phase-date {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .phase-body {
+            color: var(--gray);
+        }
+        
+        .phase-regions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
         
         /* ========== FILTRES ========== */
         .filters-bar {
@@ -1779,7 +1834,9 @@
                 `;
                 
                 // Afficher la série scientifique par défaut
-                showSecondeSerie('scientifique', null);
+                setTimeout(() => {
+                    showSecondeSerie('scientifique', null);
+                }, 100);
             } else {
                 // Pour Première et Terminale
                 const niveauData = lyceeData[niveau];
@@ -1792,35 +1849,22 @@
                     </div>
                     
                     <div id="lycee-serie-content">
-                        <div class="subjects-container">
-                            ${niveauData.scientifique.matieres.map(matiere => `
-                                <div class="subject-card ${getMatiereClass(matiere)}">
-                                    <div class="subject-header">
-                                        <span class="subject-icon">${getMatiereIcon(matiere)}</span>
-                                        <span class="subject-title">${matiere}</span>
-                                    </div>
-                                    <div class="subject-content">
-                                        <p>Contenu pédagogique pour ${niveau} - Série Scientifique</p>
-                                        <ul class="topic-list">
-                                            <li>📚 Cours disponibles</li>
-                                            <li>📝 Exercices interactifs</li>
-                                            <li>🎮 Jeux éducatifs</li>
-                                        </ul>
-                                        <button class="game-btn ${getMatiereClass(matiere)}" onclick="window.location.href='jeux.html#${niveau}-${getMatiereClass(matiere)}'">
-                                            🎮 Jeux ${matiere}
-                                        </button>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
+                        <!-- Sera rempli par JavaScript -->
                     </div>
                 `;
+                
+                // Afficher la série scientifique par défaut
+                setTimeout(() => {
+                    showLyceeSerie(niveau, 'scientifique', null);
+                }, 100);
             }
         }
         
         function showSecondeSerie(serie, event) {
             const data = secondeData[serie];
             const container = document.getElementById('seconde-content');
+            
+            if (!container) return;
             
             // Mettre à jour l'onglet actif
             if (event) {
@@ -1875,6 +1919,8 @@
             const niveauData = lyceeData[niveau][serie];
             const container = document.getElementById('lycee-serie-content');
             
+            if (!container) return;
+            
             container.innerHTML = `
                 <h4 style="color: var(--primary); margin: 2rem 0 1rem; text-align: center;">${niveauData.nom}</h4>
                 <div class="subjects-container">
@@ -1891,9 +1937,15 @@
                                     <li>📝 Exercices interactifs</li>
                                     <li>🎮 Jeux éducatifs</li>
                                 </ul>
-                                <div style="margin-top: 1.5rem;">
+                                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
                                     <button class="game-btn ${getMatiereClass(matiere)}" onclick="window.location.href='jeux.html#${niveau}-${getMatiereClass(matiere)}'">
                                         🎮 Jeux ${matiere}
+                                    </button>
+                                    <button class="btn btn-outline" onclick="alert('Cours en préparation')">
+                                        📚 Cours
+                                    </button>
+                                    <button class="btn btn-outline" onclick="alert('Exercices en préparation')">
+                                        📝 Exercices
                                     </button>
                                 </div>
                             </div>
@@ -2015,7 +2067,10 @@
             cards.forEach((card, index) => {
                 const newNum = index + 1;
                 card.id = `participant-${newNum}`;
-                card.querySelector('h4').textContent = `Participant ${newNum}`;
+                const header = card.querySelector('h4');
+                if (header) {
+                    header.textContent = `Participant ${newNum}`;
+                }
                 
                 card.querySelectorAll('input, select').forEach(input => {
                     const name = input.getAttribute('name');
@@ -2076,7 +2131,7 @@
             });
             
             const encoded = encodeURIComponent(message);
-            window.open(`https://wa.me/${yasNumber}?text=${encoded}`, '_blank');
+            window.open(`https://wa.me/${yasNumber.replace('+', '')}?text=${encoded}`, '_blank');
         }
         
         // ========== GESTION INSCRIPTION ==========
@@ -2094,6 +2149,12 @@
                 return;
             }
             
+            const cycleElement = document.querySelector('input[name="cycle"]:checked');
+            if (!cycleElement) {
+                showNotification('Veuillez sélectionner un cycle', 'error');
+                return;
+            }
+            
             const formData = {
                 etablissement: document.getElementById('etablissement').value,
                 typeEtablissement: document.getElementById('typeEtablissement').value,
@@ -2105,7 +2166,7 @@
                 professeur: document.getElementById('professeurResponsable').value,
                 contactProfesseur: document.getElementById('contactProfesseur').value,
                 emailProfesseur: document.getElementById('emailProfesseur').value,
-                cycle: document.querySelector('input[name="cycle"]:checked')?.value,
+                cycle: cycleElement.value,
                 referencePaiement: document.getElementById('referencePaiement').value,
                 datePaiement: document.getElementById('datePaiement').value,
                 participants: []
@@ -2119,13 +2180,21 @@
             }
             
             for (let i = 1; i <= participantCount; i++) {
-                formData.participants.push({
-                    nom: document.querySelector(`[name="nom-${i}"]`)?.value,
-                    prenom: document.querySelector(`[name="prenom-${i}"]`)?.value,
-                    sexe: document.querySelector(`[name="sexe-${i}"]`)?.value,
-                    age: document.querySelector(`[name="age-${i}"]`)?.value,
-                    classe: document.querySelector(`[name="classe-${i}"]`)?.value
-                });
+                const nom = document.querySelector(`[name="nom-${i}"]`);
+                const prenom = document.querySelector(`[name="prenom-${i}"]`);
+                const sexe = document.querySelector(`[name="sexe-${i}"]`);
+                const age = document.querySelector(`[name="age-${i}"]`);
+                const classe = document.querySelector(`[name="classe-${i}"]`);
+                
+                if (nom && prenom && sexe && age && classe) {
+                    formData.participants.push({
+                        nom: nom.value,
+                        prenom: prenom.value,
+                        sexe: sexe.value,
+                        age: age.value,
+                        classe: classe.value
+                    });
+                }
             }
             
             sendToWhatsApp(formData);
@@ -2142,8 +2211,12 @@
         // ========== INITIALISATION ==========
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('datePaiement').value = today;
+            const dateInput = document.getElementById('datePaiement');
+            if (dateInput) {
+                dateInput.value = today;
+            }
             
+            // Ajouter 3 participants par défaut
             for (let i = 0; i < 3; i++) {
                 setTimeout(() => addParticipant(), i * 100);
             }
@@ -2151,7 +2224,10 @@
             updateRankings();
             
             // Cacher le bouton retour au chargement (on est sur accueil)
-            document.getElementById('backToHomeBtn').style.display = 'none';
+            const backBtn = document.getElementById('backToHomeBtn');
+            if (backBtn) {
+                backBtn.style.display = 'none';
+            }
         };
     </script>
 </body>
